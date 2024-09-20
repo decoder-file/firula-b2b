@@ -1,0 +1,5 @@
+export * from './type-faq'
+export * from './get-all-faq'
+export * from './update-faq'
+export * from './delete-faq'
+export * from './update-faq'
