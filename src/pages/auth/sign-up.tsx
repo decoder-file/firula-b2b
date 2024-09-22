@@ -6,16 +6,15 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import InputMask from 'react-input-mask'
 
 import { Button } from '../../components/ui/button'
 import { Input } from '../../components/ui/input'
 import { Label } from '../../components/ui/label'
 
 import LogoGreen from '../../assets/logo-green.png'
-import { cn } from '../../lib/utils'
-import { isValidAndOver18 } from '../../utils/functions'
 import { Checkbox } from '../../components/ui/checkbox'
+import { maskCPFeCNPJ } from '../../utils/Mask'
+import { createUser } from '../../services/user'
 
 const signUpForm = z.object({
   name: z
@@ -26,12 +25,10 @@ const signUpForm = z.object({
     .string()
     .min(1, 'Sobrenome inválido')
     .max(255, 'Sobrenome muito grande'),
-  phone: z.string().min(3, 'Telefone inválido'),
-  password: z.string().min(8, 'Senha muito curta, tente uma senha mais forte.'),
   email: z.string().email('Email inválido'),
   cpf: z.string().min(1, 'CPF é obrigatória'),
+  password: z.string().min(8, 'Senha muito curta, tente uma senha mais forte.'),
   confirmPassword: z.string().min(1, 'Confirmação de senha é obrigatória'),
-  dateOfBirth: z.string().min(1, 'Data de nascimento é obrigatória'),
 })
 
 type SignUpForm = z.infer<typeof signUpForm>
@@ -61,34 +58,28 @@ export function SignUp() {
         return
       }
 
-      if (!isValidAndOver18(data.dateOfBirth)) {
-        toast.error('Você deve ter mais de 18 anos para se cadastrar!')
-        setLoadingSignUp(false)
-        return
-      }
-
       if (data.password !== data.confirmPassword) {
         toast.error('As senhas devem ser iguais!')
         setLoadingSignUp(false)
         return
       }
       const requestData = {
-        name: data.name,
-        lastName: data.lastName,
-        phone: data.phone.replace(/[^\d]/g, ''),
+        name: data.name + ' ' + data.lastName,
         email: data.email,
         password: data.password,
         cpf: data.cpf.replace(/[^\d]/g, ''),
-        dateOfBirth: data.dateOfBirth,
       }
 
       console.log('requestData', requestData)
 
-      navigate('/client/dashboard')
+      const response = await createUser(requestData)
 
-      setLoadingSignUp(false)
+      if (response.userId.length === 0) {
+        setLoadingSignUp(false)
+        return
+      }
 
-      setLoadingSignUp(false)
+      // navigate('/client/dashboard')
 
       setLoadingSignUp(false)
     } catch (error) {
@@ -116,7 +107,15 @@ export function SignUp() {
             <div className="flex w-full gap-2">
               <div className="w-full space-y-2">
                 <Label htmlFor="name">Nome</Label>
-                <Input id="name" {...register('name')} />
+                <Input
+                  id="name"
+                  {...register('name')}
+                  input={{
+                    maxLength: 50,
+                    change: (val: string) => val,
+                    value: undefined,
+                  }}
+                />
                 {errors.name && (
                   <span className="text-xs text-red-600">
                     {errors.name.message}
@@ -126,7 +125,15 @@ export function SignUp() {
 
               <div className="w-full space-y-2">
                 <Label htmlFor="lastName">Sobrenome</Label>
-                <Input id="lastName" {...register('lastName')} />
+                <Input
+                  id="lastName"
+                  {...register('lastName')}
+                  input={{
+                    maxLength: 50,
+                    change: (val: string) => val,
+                    value: undefined,
+                  }}
+                />
                 {errors.lastName && (
                   <span className="text-xs text-red-600">
                     {errors.lastName.message}
@@ -137,35 +144,18 @@ export function SignUp() {
 
             <div className="flex w-full gap-2">
               <div className="w-full space-y-2">
-                <Label htmlFor="phone">Telefone</Label>
-                <InputMask
-                  mask="(99) 9 9999-9999"
-                  id="phone"
-                  {...register('phone')}
-                  className={cn(
-                    'flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
-                  )}
+                <Label htmlFor="email">E-mail</Label>
+                <Input
+                  id="email"
+                  {...register('email')}
+                  input={{
+                    change: (val: string) => val,
+                    value: undefined,
+                  }}
                 />
-                {errors.phone && (
+                {errors.email && (
                   <span className="text-xs text-red-600">
-                    {errors.phone.message}
-                  </span>
-                )}
-              </div>
-
-              <div className="w-full space-y-2">
-                <Label htmlFor="phone">CPF</Label>
-                <InputMask
-                  mask="999.999.999-99"
-                  id="cpf"
-                  {...register('cpf')}
-                  className={cn(
-                    'flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
-                  )}
-                />
-                {errors.cpf && (
-                  <span className="text-xs text-red-600">
-                    {errors.cpf.message}
+                    {errors.email.message}
                   </span>
                 )}
               </div>
@@ -173,27 +163,25 @@ export function SignUp() {
 
             <div className="flex w-full gap-2">
               <div className="w-full space-y-2">
-                <Label htmlFor="email">E-mail</Label>
-                <Input id="email" type="email" {...register('email')} />
-                {errors.email && (
-                  <span className="text-xs text-red-600">
-                    {errors.email.message}
-                  </span>
-                )}
-              </div>
-              <div className="w-full space-y-2">
-                <Label htmlFor="email">Data de nascimento</Label>
-                <InputMask
-                  mask="99/99/9999"
-                  id="dateOfBirth"
-                  {...register('dateOfBirth')}
-                  className={cn(
-                    'flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
-                  )}
+                <Label htmlFor="cpf">CPF</Label>
+                <Input
+                  id="cpf"
+                  {...register('cpf', {
+                    onChange: (e) => {
+                      e.target.value = maskCPFeCNPJ(e.target.value)
+                    },
+                  })}
+                  input={{
+                    maxLength: 14,
+                    change: (val: string) => maskCPFeCNPJ(val),
+                    mask: maskCPFeCNPJ,
+                    value: undefined,
+                  }}
                 />
-                {errors.dateOfBirth && (
+
+                {errors.cpf && (
                   <span className="text-xs text-red-600">
-                    {errors.dateOfBirth.message}
+                    {errors.cpf.message}
                   </span>
                 )}
               </div>
@@ -206,7 +194,13 @@ export function SignUp() {
                   id="password"
                   type="password"
                   {...register('password')}
+                  input={{
+                    change: (val: string) => val,
+                    value: undefined,
+                    type: 'password',
+                  }}
                 />
+
                 {errors.password && (
                   <span className="text-xs text-red-600">
                     {errors.password.message}
@@ -220,6 +214,12 @@ export function SignUp() {
                   id="confirmPassword"
                   type="password"
                   {...register('confirmPassword')}
+                  input={{
+                    maxLength: 18,
+                    change: (val: string) => val,
+                    value: undefined,
+                    type: 'password',
+                  }}
                 />
                 {errors.confirmPassword && (
                   <span className="text-xs text-red-600">

@@ -60,7 +60,14 @@ export function SignIn() {
           <form className="space-y-4" onSubmit={handleSubmit(handleSignIn)}>
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" {...register('email')} />
+              <Input
+                id="email"
+                {...register('email')}
+                input={{
+                  change: (val: string) => val,
+                  value: undefined,
+                }}
+              />
               {errors.email && (
                 <span className="text-xs text-red-600">
                   {errors.email.message}
@@ -70,7 +77,17 @@ export function SignIn() {
 
             <div className="space-y-2">
               <Label htmlFor="password">Senha</Label>
-              <Input id="password" type="password" {...register('password')} />
+              <Input
+                id="password"
+                type="password"
+                {...register('password')}
+                input={{
+                  change: (val: string) => val,
+                  value: undefined,
+                  type: 'password',
+                }}
+              />
+
               {errors.password && (
                 <span className="text-xs text-red-600">
                   {errors.password.message}
