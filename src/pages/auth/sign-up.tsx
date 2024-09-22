@@ -79,7 +79,7 @@ export function SignUp() {
         return
       }
 
-      // navigate('/client/dashboard')
+      navigate('/b2b/create-company')
 
       setLoadingSignUp(false)
     } catch (error) {
