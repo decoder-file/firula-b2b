@@ -30,7 +30,7 @@ api.interceptors.response.use(
         const refreshToken = localStorage.getItem('refreshToken')
         if (!refreshToken) {
           // Caso não tenha o refreshToken, redireciona imediatamente para o login
-          window.location.href = '/sign-in'
+          window.location.href = '/b2b/sign-in'
           toast.error('Sua sessão expirou, faça login novamente')
           return Promise.reject(error)
         }
@@ -54,7 +54,7 @@ api.interceptors.response.use(
         // Limpa os tokens e redireciona para o login caso a atualização falhe
         localStorage.setItem('token', '')
         localStorage.setItem('refreshToken', '')
-        window.location.href = '/sign-in'
+        window.location.href = '/b2b/sign-in'
         toast.error('Sua sessão expirou, faça login novamente')
         return Promise.reject(refreshError)
       }
@@ -69,7 +69,7 @@ api.interceptors.response.use(
       localStorage.setItem('token', '')
       localStorage.setItem('refreshToken', '')
 
-      window.location.href = '/sign-in' // Redireciona para a página de login
+      window.location.href = '/b2b/sign-in' // Redireciona para a página de login
       toast.error('Sua sessão expirou, faça login novamente')
     }
 

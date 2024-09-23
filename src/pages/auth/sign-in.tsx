@@ -12,6 +12,9 @@ import { Input } from '../../components/ui/input'
 import { Label } from '../../components/ui/label'
 
 import LogoGreen from '../../assets/logo-green.png'
+import { useUserStore } from '../../store/UserStore'
+import { AuthenticateResponseType } from '../../services/user/authenticate'
+import api from '../../services/api'
 
 const signInForm = z.object({
   email: z.string().email('Email inválido'),
@@ -21,6 +24,8 @@ const signInForm = z.object({
 type SingInForm = z.infer<typeof signInForm>
 
 export function SignIn() {
+  const { setUser } = useUserStore()
+
   const navigate = useNavigate()
   const [loadingSignIn, setLoadingSignIn] = useState(false)
   const {
@@ -34,8 +39,30 @@ export function SignIn() {
   async function handleSignIn(data: SingInForm) {
     setLoadingSignIn(true)
     try {
-      console.log('########', data)
-      navigate('/dashboard')
+      const response: AuthenticateResponseType = await api.post('sign-in', data)
+
+      const { token, user } = response.data
+
+      if (user.role !== 'OWNER') {
+        toast.error(
+          'Você não tem permissão para acessar esse painel de controle',
+        )
+        setLoadingSignIn(false)
+        return
+      }
+
+      localStorage.setItem('token', token)
+
+      setUser({
+        userId: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      })
+      toast.success('Login realizado com sucesso!')
+
+      navigate('/b2b/home')
+
       setLoadingSignIn(false)
     } catch (error) {
       toast.error('Email ou senha incorreto!')

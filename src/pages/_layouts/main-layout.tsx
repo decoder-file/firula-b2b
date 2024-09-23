@@ -34,7 +34,7 @@ export default function MainLayout({ header }: MainLayoutProps) {
   const handleSignOut = async () => {
     localStorage.setItem('token', '')
     localStorage.setItem('refreshToken', '')
-    window.location.href = '/sign-in'
+    window.location.href = '/b2b/sign-in'
   }
 
   return (
