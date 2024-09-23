@@ -126,44 +126,6 @@ export function isValidResponse(response: any, statusCode = 200) {
   return response && response.status === statusCode
 }
 
-export function isMongeralClient() {
-  return process.env.REACT_APP_CLIENT === 'mongeral'
-}
-
-export function isGreenEcoBankClient() {
-  return process.env.REACT_APP_CLIENT === 'greenecobank'
-}
-
-export function isCognaClient() {
-  return process.env.REACT_APP_CLIENT === 'cogna'
-}
-
-export function isIpirangaClient() {
-  // Orbitall is using the Ipiranga customer FID for backoffice usage.
-  return (
-    process.env.REACT_APP_CLIENT === 'ipiranga' ||
-    process.env.REACT_APP_CLIENT === 'orbitall'
-  )
-}
-
-export function isOrbitallPay() {
-  return process.env.REACT_APP_CLIENT === 'orbitallPay'
-}
-
-export function isClientNoIP() {
-  return (
-    process.env.REACT_APP_CLIENT === 'greenecobank' ||
-    process.env.REACT_APP_CLIENT === 'cogna' ||
-    process.env.REACT_APP_CLIENT === 'orbitall' ||
-    process.env.REACT_APP_CLIENT === 'orbitallPay' ||
-    process.env.REACT_APP_CLIENT === 'cateno'
-  )
-}
-
-export function showInfractions() {
-  return isIpirangaClient() || isMongeralClient()
-}
-
 export function isValidTime(time: string | undefined) {
   if (!time) return false
 

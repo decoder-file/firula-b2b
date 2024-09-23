@@ -50,7 +50,8 @@ export const createAddressCompany = async ({
     return {
       addressId,
     }
-  } catch (error) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
     if (error.statusCode === 409) {
       toast.error(error.message)
       return {

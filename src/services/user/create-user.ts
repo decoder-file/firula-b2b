@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import api from '../api'
 import { toast } from 'sonner'
 
@@ -46,7 +47,7 @@ export const createUser = async ({
       userId: user,
       success: true,
     }
-  } catch (error) {
+  } catch (error: any) {
     if (error.statusCode === 409) {
       toast.error(error.message)
       return {
