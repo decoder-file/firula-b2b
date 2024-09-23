@@ -1,10 +1,9 @@
 import { Outlet, useLocation } from 'react-router-dom'
 
 import {
-  Building2,
+  GraduationCap,
   Home,
   LandPlot,
-  LineChart,
   PanelLeft,
   Settings,
   Users2,
@@ -44,9 +43,9 @@ export default function MainLayout({ header }: MainLayoutProps) {
           <Tooltip>
             <TooltipTrigger asChild>
               <a
-                href="/home"
+                href="/b2b/home"
                 className={`group flex h-9 w-9 shrink-0 items-center justify-center gap-2 rounded-full text-lg font-semibold md:h-8 md:w-8 md:text-base 
-                ${location.pathname === '/home' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground'}`}
+                ${location.pathname === '/b2b/home' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground'}`}
               >
                 <Home className="h-4 w-4 transition-all group-hover:scale-110" />
                 <span className="sr-only">Home</span>
@@ -58,22 +57,22 @@ export default function MainLayout({ header }: MainLayoutProps) {
           <Tooltip>
             <TooltipTrigger asChild>
               <a
-                href="/companies"
+                href="/b2b/classes"
                 className={`flex h-9 w-9 items-center justify-center rounded-lg transition-colors md:h-8 md:w-8
-                ${location.pathname === '/companies' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+                ${location.pathname === '/b2b/companies' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}`}
               >
-                <Building2 className="h-5 w-5" />
-                <span className="sr-only">Empresas</span>
+                <GraduationCap className="h-5 w-5" />
+                <span className="sr-only">Aulas</span>
               </a>
             </TooltipTrigger>
-            <TooltipContent side="right">Empresas</TooltipContent>
+            <TooltipContent side="right">Aulas</TooltipContent>
           </Tooltip>
           <Tooltip>
             <TooltipTrigger asChild>
               <a
-                href="/block"
+                href="/b2b/blocks"
                 className={`flex h-9 w-9 items-center justify-center rounded-lg transition-colors md:h-8 md:w-8
-                ${location.pathname === '/block' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+                ${location.pathname === '/b2b/blocks' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}`}
               >
                 <LandPlot className="h-5 w-5" />
                 <span className="sr-only">Quadras</span>
@@ -84,9 +83,9 @@ export default function MainLayout({ header }: MainLayoutProps) {
           <Tooltip>
             <TooltipTrigger asChild>
               <a
-                href="/costumers"
+                href="/b2b/costumers"
                 className={`flex h-9 w-9 items-center justify-center rounded-lg transition-colors md:h-8 md:w-8
-                ${location.pathname === '/costumers' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+                ${location.pathname === '/b2b/costumers' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}`}
               >
                 <Users2 className="h-5 w-5" />
                 <span className="sr-only">Clientes</span>
@@ -97,22 +96,9 @@ export default function MainLayout({ header }: MainLayoutProps) {
           <Tooltip>
             <TooltipTrigger asChild>
               <a
-                href="/analytics"
+                href="/b2b/config"
                 className={`flex h-9 w-9 items-center justify-center rounded-lg transition-colors md:h-8 md:w-8
-                ${location.pathname === '/analytics' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}`}
-              >
-                <LineChart className="h-5 w-5" />
-                <span className="sr-only">Análise</span>
-              </a>
-            </TooltipTrigger>
-            <TooltipContent side="right">Análise</TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <a
-                href="/config"
-                className={`flex h-9 w-9 items-center justify-center rounded-lg transition-colors md:h-8 md:w-8
-                ${location.pathname === '/config' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+                ${location.pathname === '/b2b/config' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}`}
               >
                 <Settings className="h-5 w-5" />
                 <span className="sr-only">Configuração</span>
@@ -134,42 +120,35 @@ export default function MainLayout({ header }: MainLayoutProps) {
             <SheetContent side="left" className="sm:max-w-xs">
               <nav className="grid gap-6 text-lg font-medium">
                 <a
-                  href="/home"
+                  href="/b2b/home"
                   className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
                 >
                   <Home className="h-5 w-5" />
                   Home
                 </a>
                 <a
-                  href="/companies"
+                  href="/b2b/classes"
                   className="flex items-center gap-4 px-2.5 text-foreground"
                 >
-                  <Building2 className="h-5 w-5" />
-                  Empresas
+                  <GraduationCap className="h-5 w-5" />
+                  Aulas
                 </a>
                 <a
-                  href="/block"
+                  href="/b2b/blocks"
                   className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
                 >
                   <LandPlot className="h-5 w-5" />
                   Quadras
                 </a>
                 <a
-                  href="/costumers"
+                  href="/b2b/costumers"
                   className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
                 >
                   <Users2 className="h-5 w-5" />
                   Clientes
                 </a>
                 <a
-                  href="/analytics"
-                  className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                >
-                  <LineChart className="h-5 w-5" />
-                  Análise
-                </a>
-                <a
-                  href="/config"
+                  href="/b2b/config"
                   className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
                 >
                   <Settings className="h-5 w-5" />

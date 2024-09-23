@@ -44,3 +44,11 @@ export function formatValue(value: string) {
   // Se o primeiro caractere não for zero, retorna a string original
   return value
 }
+
+export function formatCurrency(value: string) {
+  // Converte o valor para um número flutuante e divide por 100 para obter as casas decimais
+  const formattedValue = (parseFloat(value) / 100).toFixed(2)
+
+  // Converte o valor para o formato de moeda brasileiro
+  return formattedValue.replace('.', ',')
+}
