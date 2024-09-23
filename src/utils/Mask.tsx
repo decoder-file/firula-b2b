@@ -25,6 +25,12 @@ export function maskCPF(cpf: string) {
   return cpf
 }
 
+export function maskCEP(cep: string) {
+  cep = cep.replace(/\D/g, '') // Remove todos os caracteres que não são dígitos
+  cep = cep.replace(/(\d{5})(\d)/, '$1-$2') // Adiciona o hífen após os primeiros 5 dígitos
+  return cep
+}
+
 export function maskCNPJ(cnpj: string) {
   cnpj = cnpj.replace(/\D/g, '')
   cnpj = cnpj.replace(/^(\d{2})(\d)/, '$1.$2')

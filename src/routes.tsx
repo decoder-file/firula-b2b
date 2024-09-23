@@ -6,6 +6,7 @@ import { PageNotFound } from './pages/pageNotFound'
 import { AuthLayout } from './pages/_layouts/auth-layout'
 import { SignUp } from './pages/auth/sign-up'
 import { CreateCompany } from './pages/main/create-company'
+import { RegisterAddressCompany } from './pages/main/register-address-company'
 
 export const router = createBrowserRouter([
   {
@@ -36,6 +37,15 @@ export const router = createBrowserRouter([
       {
         path: '/b2b/create-company',
         element: <CreateCompany />,
+      },
+    ],
+  },
+  {
+    element: <AuthLayout />,
+    children: [
+      {
+        path: '/b2b/register-address-company',
+        element: <RegisterAddressCompany />,
       },
     ],
   },

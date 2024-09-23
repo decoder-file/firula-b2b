@@ -70,14 +70,16 @@ export function SignUp() {
         cpf: data.cpf.replace(/[^\d]/g, ''),
       }
 
-      console.log('requestData', requestData)
-
       const response = await createUser(requestData)
 
-      if (response.userId.length === 0) {
+      if (!response.success) {
         setLoadingSignUp(false)
         return
       }
+
+      console.log('######response', response)
+
+      localStorage.setItem('userId', response.userId)
 
       navigate('/b2b/create-company')
 

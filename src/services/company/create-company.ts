@@ -7,6 +7,12 @@ export type CreateCompanyResponseType = {
   message?: string
 }
 
+export type CreateCompanyResponseApiType = {
+  data: {
+    companyId: string
+  }
+}
+
 export type CreateCompanyRequest = {
   name: string
   cpfCnpj: string
@@ -27,6 +33,15 @@ export const createCompany = async ({
   opening_date,
 }: CreateCompanyRequest): Promise<CreateCompanyResponseType> => {
   try {
+    const userId = localStorage.getItem('userId')
+
+    if (!userId) {
+      toast.error('Usuário não encontrado')
+      return {
+        companyId: '',
+      }
+    }
+
     const data = {
       name,
       cpfCnpj,
@@ -38,12 +53,12 @@ export const createCompany = async ({
       opening_date,
     }
 
-    const response: CreateCompanyResponseType = await api.post(
-      '/company?userId=30008b35-451e-4983-9d31-1a4a750baa9b',
+    const response: CreateCompanyResponseApiType = await api.post(
+      `/company?userId=${userId}`,
       data,
     )
 
-    const companyId = response.companyId
+    const companyId = response.data.companyId
 
     toast.success('Empresa cadastrada com sucesso!')
     return {

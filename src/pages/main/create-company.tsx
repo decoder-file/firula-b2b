@@ -14,6 +14,7 @@ import { maskCNPJ, maskPhoneNumber } from '../../utils/Mask'
 import { Search } from 'lucide-react'
 import { toast } from 'sonner'
 import { createCompany } from '../../services/company'
+import { useNavigate } from 'react-router-dom'
 
 const createCompanyForm = z.object({
   cpfCnpj: z.string().min(1, 'Campo CNPJ é obrigatório'),
@@ -27,6 +28,8 @@ const createCompanyForm = z.object({
 type CreateCompanyForm = z.infer<typeof createCompanyForm>
 
 export function CreateCompany() {
+  const navigate = useNavigate()
+
   const [loadingCreateCompany, setLoadingCreateCompany] = useState(false)
   const [loadingGetCNPJ, setLoadingGetCNPJ] = useState(false)
 
@@ -89,7 +92,8 @@ export function CreateCompany() {
 
       return
     }
-    toast.success('Empresa cadastrada com sucesso!')
+    localStorage.setItem('companyId', response.companyId)
+    navigate('/b2b/register-address-company')
     setLoadingCreateCompany(false)
   }
   return (

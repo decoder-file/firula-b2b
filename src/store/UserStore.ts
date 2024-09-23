@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
 
 export type User = {
-  id: string
+  userId: string
   name: string
   email: string
   role: string
@@ -20,10 +20,24 @@ export const useUserStore = create<UserStore>()(
     persist(
       (set) => {
         return {
-          user: { id: '', name: '', email: '', role: 'user' },
+          user: {
+            userId: '',
+            name: '',
+            email: '',
+            role: 'user',
+            companyId: '',
+          },
           setUser: (user) => set({ user }),
           removeAdmin: () =>
-            set({ user: { id: '', name: '', email: '', role: 'user' } }),
+            set({
+              user: {
+                userId: '',
+                name: '',
+                email: '',
+                role: 'user',
+                companyId: '',
+              },
+            }),
         }
       },
       {
