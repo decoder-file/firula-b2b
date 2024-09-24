@@ -163,7 +163,10 @@ export default function BlocksPage() {
           <ScreenLoading />
         ) : (
           <>
-            <Button onClick={() => navigate('/type-block')} className="mb-3">
+            <Button
+              onClick={() => navigate('/b2b/create-block')}
+              className="mb-3"
+            >
               Cadastrar nova quadra
             </Button>
             <div className="rounded-md border">

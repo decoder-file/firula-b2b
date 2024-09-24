@@ -32,7 +32,7 @@ export function DateTimeSection({
   return (
     <form>
       <div className="w-full items-center justify-between justify-items-center sm:flex">
-        <div className="mr-3 flex items-center justify-items-center">
+        <div className="mb-2 mr-3 flex items-center justify-items-center">
           <Switch
             id="airplane-mode"
             checked={active}
@@ -116,7 +116,7 @@ export function DateTimeSection({
           </>
         ) : (
           <>
-            <div className="flex w-full max-w-[35rem] items-center justify-items-center rounded-lg bg-slate-200 p-3">
+            <div className="flex w-full max-w-[35rem] items-center justify-items-center rounded-lg bg-slate-500 p-3">
               <Moon />
               <p className="ml-3 gap-4 text-sm font-normal">Fechado</p>
             </div>

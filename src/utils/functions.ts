@@ -52,3 +52,96 @@ export function formatCurrency(value: string) {
   // Converte o valor para o formato de moeda brasileiro
   return formattedValue.replace('.', ',')
 }
+
+export enum Sport {
+  SOCCER = 'SOCCER',
+  VOLLEYBALL = 'VOLLEYBALL',
+  BEACH_VOLLEY = 'BEACH_VOLLEY',
+  BASKETBALL = 'BASKETBALL',
+  FUTSAL = 'FUTSAL',
+  TENNIS = 'TENNIS',
+  TABLE_TENNIS = 'TABLE_TENNIS',
+  HANDBALL = 'HANDBALL',
+  SWIMMING = 'SWIMMING',
+  ATHLETICS = 'ATHLETICS',
+  SURFING = 'SURFING',
+  SKATEBOARDING = 'SKATEBOARDING',
+  JUDO = 'JUDO',
+  KARATE = 'KARATE',
+  TAEKWONDO = 'TAEKWONDO',
+  JIU_JITSU = 'JIU_JITSU',
+  BOXING = 'BOXING',
+  MMA = 'MMA',
+  CAPOEIRA = 'CAPOEIRA',
+  CYCLING = 'CYCLING',
+  MOTOR_RACING = 'MOTOR_RACING',
+  EQUESTRIAN = 'EQUESTRIAN',
+  GYMNASTICS = 'GYMNASTICS',
+  SAILING = 'SAILING',
+  BEACH_SOCCER = 'BEACH_SOCCER',
+  FOOTVOLLEY = 'FOOTVOLLEY',
+  RUGBY = 'RUGBY',
+  ROLLER_HOCKEY = 'ROLLER_HOCKEY',
+  BODYBOARDING = 'BODYBOARDING',
+  KITESURFING = 'KITESURFING',
+  CANOEING = 'CANOEING',
+}
+// Mapeamento de esportes para português
+const sportTranslations: { [key in Sport]: string } = {
+  [Sport.SOCCER]: 'Futebol',
+  [Sport.VOLLEYBALL]: 'Vôlei',
+  [Sport.BEACH_VOLLEY]: 'Vôlei de Praia',
+  [Sport.BASKETBALL]: 'Basquete',
+  [Sport.FUTSAL]: 'Futsal',
+  [Sport.TENNIS]: 'Tênis',
+  [Sport.TABLE_TENNIS]: 'Tênis de Mesa',
+  [Sport.HANDBALL]: 'Handebol',
+  [Sport.SWIMMING]: 'Natação',
+  [Sport.ATHLETICS]: 'Atletismo',
+  [Sport.SURFING]: 'Surfe',
+  [Sport.SKATEBOARDING]: 'Skate',
+  [Sport.JUDO]: 'Judô',
+  [Sport.KARATE]: 'Karatê',
+  [Sport.TAEKWONDO]: 'Taekwondo',
+  [Sport.JIU_JITSU]: 'Jiu-Jitsu',
+  [Sport.BOXING]: 'Boxe',
+  [Sport.MMA]: 'MMA',
+  [Sport.CAPOEIRA]: 'Capoeira',
+  [Sport.CYCLING]: 'Ciclismo',
+  [Sport.MOTOR_RACING]: 'Automobilismo',
+  [Sport.EQUESTRIAN]: 'Hipismo',
+  [Sport.GYMNASTICS]: 'Ginástica',
+  [Sport.SAILING]: 'Vela',
+  [Sport.BEACH_SOCCER]: 'Futebol de Praia',
+  [Sport.FOOTVOLLEY]: 'Futevôlei',
+  [Sport.RUGBY]: 'Rugby',
+  [Sport.ROLLER_HOCKEY]: 'Hóquei sobre Patins',
+  [Sport.BODYBOARDING]: 'Bodyboarding',
+  [Sport.KITESURFING]: 'Kitesurf',
+  [Sport.CANOEING]: 'Canoagem',
+}
+
+// Função para converter esportes para português
+export const translateSportToPortuguese = (sport: Sport): string => {
+  return sportTranslations[sport] || 'Esporte desconhecido'
+}
+
+export function translateDiaWeek(day: string): string {
+  const daysWeek: { [key: string]: string } = {
+    Monday: 'Segunda-feira',
+    Tuesday: 'Terça-feira',
+    Wednesday: 'Quarta-feira',
+    Thursday: 'Quinta-feira',
+    Friday: 'Sexta-feira',
+    Saturday: 'Sábado',
+    Sunday: 'Domingo',
+  }
+
+  const portugueseDay = daysWeek[day]
+
+  if (!portugueseDay) {
+    throw new Error('Dia da semana inválido')
+  }
+
+  return portugueseDay
+}
