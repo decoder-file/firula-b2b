@@ -18,6 +18,8 @@ import {
   createAddressCompany,
   getAddressByCep,
 } from '../../services/company/address'
+import { useUserStore } from '../../store/UserStore'
+import { useNavigate } from 'react-router-dom'
 
 const createAddressCompanyForm = z.object({
   zipCode: z.string().min(1, 'CEP é obrigatório'),
@@ -32,6 +34,10 @@ const createAddressCompanyForm = z.object({
 type CreateAddressCompanyForm = z.infer<typeof createAddressCompanyForm>
 
 export function RegisterAddressCompany() {
+  const { user } = useUserStore()
+
+  const navigate = useNavigate()
+
   const [loadingCreateAddressCompany, setLoadingCreateAddressCompany] =
     useState(false)
   const [loadingAddress, setLoadingAddress] = useState(false)
@@ -50,14 +56,12 @@ export function RegisterAddressCompany() {
 
   async function handleCreateCompany(data: CreateAddressCompanyForm) {
     setLoadingCreateAddressCompany(true)
-    const response = await createAddressCompany(data)
+    const response = await createAddressCompany(user.companyId ?? '', data)
 
     if (!response.message) {
       setLoadingCreateAddressCompany(false)
-      return
+      navigate('/b2b/home')
     }
-
-    console.log('#######', data)
   }
 
   const getAddress = async () => {

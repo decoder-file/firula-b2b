@@ -41,7 +41,7 @@ export function SignIn() {
     try {
       const response: AuthenticateResponseType = await api.post('sign-in', data)
 
-      const { token, user } = response.data
+      const { token, user, company } = response.data
 
       if (user.role !== 'OWNER') {
         toast.error(
@@ -58,7 +58,9 @@ export function SignIn() {
         name: user.name,
         email: user.email,
         role: user.role,
+        companyId: company[0].id,
       })
+
       toast.success('Login realizado com sucesso!')
 
       navigate('/b2b/home')

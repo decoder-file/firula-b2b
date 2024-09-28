@@ -38,8 +38,6 @@ export const createUser = async ({
 
     const response: CreateUserResponseApiType = await api.post('users', data)
 
-    console.log(response)
-
     const user = response.data.userId
 
     toast.success('Conta criada com sucesso!')

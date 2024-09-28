@@ -1,6 +1,12 @@
 import api from '../api'
 import { toast } from 'sonner'
 
+type CompanyType = {
+  name: string
+  id: string
+  image: string | null
+}
+
 export type AuthenticateResponseType = {
   data: {
     token: string
@@ -13,6 +19,7 @@ export type AuthenticateResponseType = {
       isBlock: boolean
       imageUrl: string | null
     }
+    company: CompanyType[]
   }
 }
 

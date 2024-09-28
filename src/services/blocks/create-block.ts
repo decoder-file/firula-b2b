@@ -17,6 +17,7 @@ export type CreateBlockRequest = {
     endTime: string
     active: boolean
   }[]
+  companyId: string
 }
 
 export const createBlock = async ({
@@ -26,10 +27,9 @@ export const createBlock = async ({
   sports,
   imageUrl,
   openingHours,
+  companyId,
 }: CreateBlockRequest): Promise<{ success: boolean }> => {
   try {
-    const companyId = localStorage.getItem('companyId')
-
     if (!companyId) {
       toast.error(
         'Erro ao cadastrar quadra, entre em contato com seu gerente de conta.',

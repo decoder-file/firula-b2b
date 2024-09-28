@@ -21,6 +21,7 @@ export type CreateCompanyRequest = {
   corporate_reason: string
   regime: string
   opening_date: string
+  userId: string
 }
 
 export const createCompany = async ({
@@ -31,10 +32,9 @@ export const createCompany = async ({
   corporate_reason,
   regime,
   opening_date,
+  userId,
 }: CreateCompanyRequest): Promise<CreateCompanyResponseType> => {
   try {
-    const userId = localStorage.getItem('userId')
-
     if (!userId) {
       toast.error('Usuário não encontrado')
       return {

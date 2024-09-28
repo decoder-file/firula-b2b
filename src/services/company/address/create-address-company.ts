@@ -8,18 +8,11 @@ export type CreateCompanyResponseType = {
   message?: string
 }
 
-export const createAddressCompany = async ({
-  city,
-  complement,
-  neighborhood,
-  number,
-  state,
-  street,
-  zipCode,
-}: AddressType): Promise<CreateCompanyResponseType> => {
+export const createAddressCompany = async (
+  companyId: string,
+  data: AddressType,
+): Promise<CreateCompanyResponseType> => {
   try {
-    const companyId = localStorage.getItem('companyId')
-
     if (!companyId) {
       toast.error(
         'Erro ao cadastrar endereço, entre em contato com seu gerente de conta.',
@@ -29,19 +22,19 @@ export const createAddressCompany = async ({
       }
     }
 
-    const data = {
-      city,
-      complement,
-      neighborhood,
-      number,
-      state,
-      street,
-      zipCode,
+    const dataAddress = {
+      city: data.city,
+      complement: data.complement,
+      neighborhood: data.neighborhood,
+      number: data.number,
+      state: data.state,
+      street: data.street,
+      zipCode: data.zipCode,
     }
 
     const response: CreateCompanyResponseType = await api.post(
       `company-address?companyId=${companyId}`,
-      data,
+      dataAddress,
     )
 
     const addressId = response.addressId

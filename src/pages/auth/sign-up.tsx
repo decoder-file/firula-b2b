@@ -15,6 +15,10 @@ import LogoGreen from '../../assets/logo-green.png'
 import { Checkbox } from '../../components/ui/checkbox'
 import { maskCPFeCNPJ } from '../../utils/Mask'
 import { createUser } from '../../services/user'
+import { useUserStore } from '../../store/UserStore'
+
+import { AuthenticateResponseType } from '../../services/user/authenticate'
+import api from '../../services/api'
 
 const signUpForm = z.object({
   name: z
@@ -34,6 +38,8 @@ const signUpForm = z.object({
 type SignUpForm = z.infer<typeof signUpForm>
 
 export function SignUp() {
+  const { setUser } = useUserStore()
+
   const navigate = useNavigate()
 
   const [acceptTerms, setAcceptTerms] = useState(false)
@@ -77,9 +83,21 @@ export function SignUp() {
         return
       }
 
-      console.log('######response', response)
+      const responseAuthenticate: AuthenticateResponseType = await api.post(
+        'sign-in',
+        data,
+      )
 
-      localStorage.setItem('userId', response.userId)
+      const { token, user } = responseAuthenticate.data
+
+      localStorage.setItem('token', token)
+
+      setUser({
+        userId: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      })
 
       navigate('/b2b/create-company')
 

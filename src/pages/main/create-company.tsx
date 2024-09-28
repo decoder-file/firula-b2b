@@ -15,6 +15,7 @@ import { Search } from 'lucide-react'
 import { toast } from 'sonner'
 import { createCompany } from '../../services/company'
 import { useNavigate } from 'react-router-dom'
+import { useUserStore } from '../../store/UserStore'
 
 const createCompanyForm = z.object({
   cpfCnpj: z.string().min(1, 'Campo CNPJ é obrigatório'),
@@ -29,6 +30,7 @@ type CreateCompanyForm = z.infer<typeof createCompanyForm>
 
 export function CreateCompany() {
   const navigate = useNavigate()
+  const { user, setUser } = useUserStore()
 
   const [loadingCreateCompany, setLoadingCreateCompany] = useState(false)
   const [loadingGetCNPJ, setLoadingGetCNPJ] = useState(false)
@@ -83,6 +85,7 @@ export function CreateCompany() {
       corporate_reason: data.corporate_reason,
       regime: data.regime,
       opening_date: data.opening_date,
+      userId: user.userId ?? '',
     }
 
     const response = await createCompany(sendData)
@@ -92,7 +95,7 @@ export function CreateCompany() {
 
       return
     }
-    localStorage.setItem('companyId', response.companyId)
+    setUser({ ...user, companyId: response.companyId })
     navigate('/b2b/register-address-company')
     setLoadingCreateCompany(false)
   }

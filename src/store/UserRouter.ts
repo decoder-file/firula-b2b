@@ -18,7 +18,7 @@ export const useRouterStore = create<UserStore>()(
         }
       },
       {
-        name: 'router-store', // nome da chave no armazenamento local
+        name: 'b2b-router-store', // nome da chave no armazenamento local
         getStorage: () => localStorage, // ou sessionStorage
       },
     ),

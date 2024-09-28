@@ -30,6 +30,7 @@ import {
 } from '../../utils/functions'
 import { DateTimeSection } from '../../components/date-time-section'
 import { capitalizeEachWord } from '../../utils/Mask'
+import { useUserStore } from '../../store/UserStore'
 
 const createBlockForm = z.object({
   name: z.string().min(1, 'Nome é obrigatório'),
@@ -82,6 +83,7 @@ const initialDayState: DayState = {
 
 export function CreateBlockPage() {
   const navigate = useNavigate()
+  const { user } = useUserStore()
 
   const [typeBlock, setTypeBlock] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
@@ -173,6 +175,7 @@ export function CreateBlockPage() {
         endTime: values.endTime,
         active: values.active,
       })),
+      companyId: user.companyId ?? '',
     })
 
     if (response.success) {

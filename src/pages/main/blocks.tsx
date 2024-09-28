@@ -38,9 +38,11 @@ import {
 } from '../../services/blocks'
 import { useNavigate } from 'react-router-dom'
 import { formatCurrency } from '../../utils/functions'
+import { useUserStore } from '../../store/UserStore'
 
 export default function BlocksPage() {
   const navigate = useNavigate()
+  const { user } = useUserStore()
 
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -143,7 +145,9 @@ export default function BlocksPage() {
   }
 
   const findAllBlocks = async () => {
-    const response = await getBlocksByCompanyId()
+    const response = await getBlocksByCompanyId({
+      companyId: user.companyId ?? '',
+    })
     if (response.blocks) {
       setTableData(response.blocks)
     }
