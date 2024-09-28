@@ -22,6 +22,7 @@ export type CreateCompanyRequest = {
   regime: string
   opening_date: string
   userId: string
+  imageUrl?: string
 }
 
 export const createCompany = async ({
@@ -33,6 +34,7 @@ export const createCompany = async ({
   regime,
   opening_date,
   userId,
+  imageUrl,
 }: CreateCompanyRequest): Promise<CreateCompanyResponseType> => {
   try {
     if (!userId) {
@@ -51,6 +53,7 @@ export const createCompany = async ({
       corporate_reason,
       regime,
       opening_date,
+      imageUrl,
     }
 
     const response: CreateCompanyResponseApiType = await api.post(

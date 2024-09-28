@@ -16,6 +16,9 @@ import { toast } from 'sonner'
 import { createCompany } from '../../services/company'
 import { useNavigate } from 'react-router-dom'
 import { useUserStore } from '../../store/UserStore'
+import { GetUrlImageType } from '../../services/image'
+import { getUrlImage } from '../../services/image/get-url-image'
+import axios from 'axios'
 
 const createCompanyForm = z.object({
   cpfCnpj: z.string().min(1, 'Campo CNPJ é obrigatório'),
@@ -34,6 +37,7 @@ export function CreateCompany() {
 
   const [loadingCreateCompany, setLoadingCreateCompany] = useState(false)
   const [loadingGetCNPJ, setLoadingGetCNPJ] = useState(false)
+  const [imageUrl, setImageUrl] = useState<FileList | null>(null)
 
   const {
     register,
@@ -77,6 +81,21 @@ export function CreateCompany() {
   async function handleCreateCompany(data: CreateCompanyForm) {
     setLoadingCreateCompany(true)
 
+    let imageCompany = ''
+    if (imageUrl) {
+      const responseImage: GetUrlImageType = (await getUrlImage(
+        data.fantasy_name.toLocaleLowerCase().replace(/\s/g, '') + '_company',
+      )) as GetUrlImageType
+
+      imageCompany = responseImage.data.url
+
+      await axios.put(responseImage.data.signedUrl, imageUrl[0], {
+        headers: {
+          'Content-Type': 'image/png',
+        },
+      })
+    }
+
     const sendData = {
       name: data.fantasy_name,
       cpfCnpj: data.cpfCnpj,
@@ -86,6 +105,7 @@ export function CreateCompany() {
       regime: data.regime,
       opening_date: data.opening_date,
       userId: user.userId ?? '',
+      imageUrl: imageCompany,
     }
 
     const response = await createCompany(sendData)
@@ -99,6 +119,11 @@ export function CreateCompany() {
     navigate('/b2b/register-address-company')
     setLoadingCreateCompany(false)
   }
+
+  function handleChoseImage(e: React.ChangeEvent<HTMLInputElement>) {
+    setImageUrl(e.target.files)
+  }
+
   return (
     <>
       <Helmet title="Cadastro" />
@@ -120,6 +145,58 @@ export function CreateCompany() {
             className="space-y-4"
             onSubmit={handleSubmit(handleCreateCompany)}
           >
+            <Label className="mb-1 text-sm font-semibold" htmlFor="lastName">
+              Imagem da empresa
+            </Label>
+            <div className="mb-2 flex w-full items-center justify-center">
+              <label
+                htmlFor="dropzone-file"
+                className="dark:hover:bg-bray-800 flex w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+              >
+                <div className="flex flex-col items-center justify-center pb-6 pt-5">
+                  {imageUrl ? (
+                    <img
+                      src={URL.createObjectURL(imageUrl[0])}
+                      alt="Logo Firula"
+                      className="h-20 w-20"
+                    />
+                  ) : (
+                    <svg
+                      className="mb-4 h-8 w-8 text-gray-500 dark:text-gray-400"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 20 16"
+                    >
+                      <path
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                      />
+                    </svg>
+                  )}
+
+                  <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                    <span className="font-semibold">
+                      {imageUrl
+                        ? 'Clique para alterar a imagem'
+                        : 'Clique para carregar'}
+                    </span>
+                  </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    PNG ou JPG (MAX. 400x400px)
+                  </p>
+                </div>
+                <input
+                  id="dropzone-file"
+                  type="file"
+                  onChange={handleChoseImage}
+                  className="hidden"
+                />
+              </label>
+            </div>
             <div className="flex w-full items-end gap-2">
               <div className="w-full space-y-2">
                 <Label htmlFor="cpfCnpj">CNPJ</Label>
