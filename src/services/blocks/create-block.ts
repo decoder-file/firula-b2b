@@ -1,5 +1,6 @@
 import api from '../api'
 import { toast } from 'sonner'
+import { OpeningHoursType } from './block.type'
 
 export type CreateBlockResponseType = {
   blockId: string
@@ -11,12 +12,7 @@ export type CreateBlockRequest = {
   typeBlockId: string
   sports: string[]
   imageUrl?: string
-  openingHours: {
-    dayOfWeek: string
-    startTime: string
-    endTime: string
-    active: boolean
-  }[]
+  openingHours: OpeningHoursType[]
   companyId: string
 }
 

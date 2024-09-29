@@ -1,3 +1,10 @@
+export type OpeningHoursType = {
+  dayOfWeek: string
+  startTime: string
+  endTime: string
+  active: boolean
+}
+
 export type BlockType = {
   id: string
   name: string
@@ -5,5 +12,7 @@ export type BlockType = {
   imageUrl: string
   isActive: string
   typeBlockId: string
+  sports: string[]
   companyId: string
+  openingHours?: OpeningHoursType[]
 }

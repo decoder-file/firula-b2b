@@ -1,5 +1,6 @@
 import api from '../api'
 import { toast } from 'sonner'
+import { OpeningHoursType } from './block.type'
 
 export type UpdateBlocksResponseType = {
   blockId: string
@@ -11,6 +12,9 @@ export type UpdateBlocksRequest = {
   valueForHour?: string
   typeBlockId?: string
   isActive?: boolean
+  openingHours?: OpeningHoursType[]
+  sports?: string[]
+  imageUrl?: string
 }
 
 export const updateBlocks = async ({
@@ -19,6 +23,9 @@ export const updateBlocks = async ({
   valueForHour,
   typeBlockId,
   isActive,
+  openingHours,
+  sports,
+  imageUrl,
 }: UpdateBlocksRequest): Promise<{ success: boolean }> => {
   try {
     const data = {
@@ -26,6 +33,9 @@ export const updateBlocks = async ({
       valueForHour,
       typeBlockId,
       isActive,
+      openingHours,
+      sports,
+      imageUrl,
     }
     const url = `company-block?blockId=${blockId}`
 

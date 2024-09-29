@@ -98,7 +98,11 @@ export default function BlocksPage() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem>Visualizar detalhe da quadra</DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => navigate(`/b2b/edit-block/${blockId}`)}
+              >
+                Visualizar detalhe da quadra
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 onClick={() => updateBlock(blockId, !blockStatus)}
