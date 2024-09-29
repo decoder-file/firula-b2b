@@ -23,6 +23,9 @@ import { Tabs, TabsContent } from '../../components/ui/tabs'
 import { getAllScheduling, SchedulingType } from '../../services/scheduling'
 import React from 'react'
 import { useUserStore } from '../../store/UserStore'
+import moment from 'moment'
+import { getStatistic, GetStatisticType } from '../../services/statistic'
+import { Skeleton } from '../../components/ui/skeleton'
 
 export default function HomePage() {
   const { user } = useUserStore()
@@ -31,6 +34,8 @@ export default function HomePage() {
   const [schedulingData, setSchedulingData] = React.useState<SchedulingType[]>(
     [],
   )
+  const [loadingStatistic, setLoadingStatistic] = React.useState(true)
+  const [statisticData, setStatisticData] = React.useState<GetStatisticType>()
 
   const findAllScheduling = async () => {
     const response = await getAllScheduling({
@@ -43,46 +48,74 @@ export default function HomePage() {
     setLoadingScheduling(false)
   }
 
+  const fetchStatistic = async () => {
+    const response = await getStatistic(user.companyId ?? '')
+    if (response.dashboard) {
+      setStatisticData(response)
+    }
+    setLoadingStatistic(false)
+  }
+
   React.useEffect(() => {
     findAllScheduling()
+    fetchStatistic()
   }, [])
 
   return (
     <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2">
       <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
-        <Card x-chunk="dashboard-05-chunk-1">
-          <CardHeader className="pb-2">
-            <CardDescription>Empresas cadastras</CardDescription>
-            <CardTitle className="text-4xl">0</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-xs text-muted-foreground">
-              +25% do último mês
-            </div>
-          </CardContent>
-        </Card>
-        <Card x-chunk="dashboard-05-chunk-1">
-          <CardHeader className="pb-2">
-            <CardDescription>Quadras cadastras</CardDescription>
-            <CardTitle className="text-4xl">0</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-xs text-muted-foreground">
-              +25% do último mês
-            </div>
-          </CardContent>
-        </Card>
-        <Card x-chunk="dashboard-05-chunk-2">
-          <CardHeader className="pb-2">
-            <CardDescription>Clientes cadastrados</CardDescription>
-            <CardTitle className="text-4xl">0</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-xs text-muted-foreground">
-              +10% do último mês{' '}
-            </div>
-          </CardContent>
-        </Card>
+        {loadingStatistic ? (
+          <>
+            <Skeleton className="h-[125px] w-full rounded-xl" />
+            <Skeleton className="h-[125px] w-full rounded-xl" />
+            <Skeleton className="h-[125px] w-full rounded-xl" />
+          </>
+        ) : (
+          <>
+            <Card x-chunk="dashboard-05-chunk-1">
+              <CardHeader className="pb-2">
+                <CardDescription>Agendamentos</CardDescription>
+                <CardTitle className="text-4xl">
+                  {statisticData?.dashboard?.numberOfScheduling}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-xs text-muted-foreground">
+                  {/* +25% do último mês */}
+                  Agendamentos de {moment().format('MMMM')}
+                </div>
+              </CardContent>
+            </Card>
+            <Card x-chunk="dashboard-05-chunk-1">
+              <CardHeader className="pb-2">
+                <CardDescription>Quadras cadastras</CardDescription>
+                <CardTitle className="text-4xl">
+                  {statisticData?.dashboard?.numberOfBlocks}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-xs text-muted-foreground">
+                  {/* +25% do último mês */}
+                  Quadras cadastradas
+                </div>
+              </CardContent>
+            </Card>
+            <Card x-chunk="dashboard-05-chunk-2">
+              <CardHeader className="pb-2">
+                <CardDescription>Clientes cadastrados</CardDescription>
+                <CardTitle className="text-4xl">
+                  {statisticData?.dashboard?.numberOfCustomers}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-xs text-muted-foreground">
+                  {/* +10% do último mês{' '} */}
+                  Clientes cadastrados
+                </div>
+              </CardContent>
+            </Card>
+          </>
+        )}
       </div>
       <Tabs defaultValue="week">
         <div className="flex items-center">
