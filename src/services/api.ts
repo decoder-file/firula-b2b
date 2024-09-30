@@ -2,8 +2,8 @@ import axios from 'axios'
 import { toast } from 'sonner'
 
 const api = axios.create({
-  // baseURL: 'https://firula-backend.onrender.com',
-  baseURL: 'http://localhost:3333',
+  baseURL: 'https://firula-backend.onrender.com',
+  // baseURL: 'http://localhost:3333',
 })
 
 api.interceptors.request.use(
