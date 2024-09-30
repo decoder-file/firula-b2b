@@ -25,6 +25,20 @@ export function maskCPF(cpf: string) {
   return cpf
 }
 
+export function maskReal(value: string | number): string {
+  // Converta o valor para string se for um número
+  let valueStr = typeof value === 'number' ? value.toString() : value
+
+  // Remove todos os caracteres que não sejam números
+  valueStr = valueStr.replace(/\D/g, '')
+
+  // Divide o valor por 100 e formata com duas casas decimais
+  const formattedValue = (parseInt(valueStr, 10) / 100).toFixed(2)
+
+  // Substitui o ponto pela vírgula para a formatação em real e usa a expressão regular para adicionar separador de milhar
+  return formattedValue.replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+}
+
 export function maskCEP(cep: string) {
   cep = cep.replace(/\D/g, '') // Remove todos os caracteres que não são dígitos
   cep = cep.replace(/(\d{5})(\d)/, '$1-$2') // Adiciona o hífen após os primeiros 5 dígitos

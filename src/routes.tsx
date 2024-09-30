@@ -13,6 +13,7 @@ import BlocksPage from './pages/main/blocks'
 import { CreateBlockPage } from './pages/main/create-block'
 import CostumersPage from './pages/main/costumers'
 import { EditBlockPage } from './pages/main/edit-block'
+import { SettingsPage } from './pages/main/settings'
 
 export const router = createBrowserRouter([
   {
@@ -97,6 +98,15 @@ export const router = createBrowserRouter([
       {
         path: '/b2b/costumers',
         element: <CostumersPage />,
+      },
+    ],
+  },
+  {
+    element: <MainLayout header={undefined} />,
+    children: [
+      {
+        path: '/b2b/config',
+        element: <SettingsPage />,
       },
     ],
   },

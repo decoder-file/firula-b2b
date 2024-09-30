@@ -29,7 +29,7 @@ import {
   translateDiaWeek,
 } from '../../utils/functions'
 import { DateTimeSection } from '../../components/date-time-section'
-import { capitalizeEachWord } from '../../utils/Mask'
+import { capitalizeEachWord, maskReal } from '../../utils/Mask'
 import { useUserStore } from '../../store/UserStore'
 
 const createBlockForm = z.object({
@@ -166,7 +166,7 @@ export function CreateBlockPage() {
     const response = await createBlock({
       name: data.name,
       typeBlockId: typeBlock,
-      valueForHour: data.valueForHour.replace('R$', ''),
+      valueForHour: data.valueForHour.replace(',', ''),
       imageUrl: imageBlock,
       sports,
       openingHours: Object.entries(days).map(([day, values]) => ({
@@ -300,10 +300,15 @@ export function CreateBlockPage() {
               </Label>
               <Input
                 id="valueForHour"
-                {...register('valueForHour')}
+                {...register('valueForHour', {
+                  onChange: (e) => {
+                    e.target.value = maskReal(e.target.value)
+                  },
+                })}
                 input={{
+                  mask: maskReal,
                   maxLength: 100,
-                  change: (val: string) => val,
+                  change: (val: string) => maskReal(val),
                   value: undefined,
                 }}
               />

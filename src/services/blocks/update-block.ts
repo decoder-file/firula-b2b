@@ -28,14 +28,28 @@ export const updateBlocks = async ({
   imageUrl,
 }: UpdateBlocksRequest): Promise<{ success: boolean }> => {
   try {
-    const data = {
+    const data: {
+      name?: string
+      valueForHour?: string
+      typeBlockId?: string
+      isActive?: boolean
+      imageUrl?: string
+      openingHours?: OpeningHoursType[]
+      sports?: string[]
+    } = {
       name,
       valueForHour,
       typeBlockId,
       isActive,
-      openingHours,
-      sports,
       imageUrl,
+    }
+
+    if (openingHours) {
+      data.openingHours = openingHours
+    }
+
+    if (sports) {
+      data.sports = sports
     }
     const url = `company-block?blockId=${blockId}`
 

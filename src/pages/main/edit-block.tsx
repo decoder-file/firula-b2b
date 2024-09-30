@@ -28,7 +28,7 @@ import {
   translateDiaWeek,
 } from '../../utils/functions'
 import { DateTimeSection } from '../../components/date-time-section'
-import { capitalizeEachWord } from '../../utils/Mask'
+import { capitalizeEachWord, maskReal } from '../../utils/Mask'
 import { getBlockById } from '../../services/blocks/get-block-by-id'
 import { ScreenLoading } from '../../components/screen-loading'
 import { updateBlocks } from '../../services/blocks'
@@ -166,7 +166,7 @@ export function EditBlockPage() {
     const response = await updateBlocks({
       name: data.name,
       typeBlockId: typeBlock,
-      valueForHour: data.valueForHour.replace('R$', ''),
+      valueForHour: data.valueForHour.replace(',', ''),
       imageUrl: imageBlock,
       sports,
       openingHours: Object.entries(days).map(([day, values]) => ({
@@ -203,7 +203,7 @@ export function EditBlockPage() {
     const response = await getBlockById({ blockId: blockId ?? '' })
     if (response.success) {
       setValue('name', response.block?.name ?? '')
-      setValue('valueForHour', response.block?.valueForHour ?? '')
+      setValue('valueForHour', maskReal(response.block?.valueForHour ?? ''))
       setDays(
         response.block?.openingHours?.reduce(
           (acc, item) => {
@@ -329,10 +329,15 @@ export function EditBlockPage() {
                   </Label>
                   <Input
                     id="valueForHour"
-                    {...register('valueForHour')}
+                    {...register('valueForHour', {
+                      onChange: (e) => {
+                        e.target.value = maskReal(e.target.value)
+                      },
+                    })}
                     input={{
+                      mask: maskReal,
                       maxLength: 100,
-                      change: (val: string) => val,
+                      change: (val: string) => maskReal(val),
                       value: undefined,
                     }}
                   />

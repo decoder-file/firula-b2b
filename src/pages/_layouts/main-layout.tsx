@@ -22,6 +22,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '../../components/ui/dropdown-menu'
+import { toast } from 'sonner'
 
 type MainLayoutProps = {
   header: React.ReactNode
@@ -57,7 +58,10 @@ export default function MainLayout({ header }: MainLayoutProps) {
           <Tooltip>
             <TooltipTrigger asChild>
               <a
-                href="/b2b/classes"
+                // href="/b2b/classes"
+                onClick={() =>
+                  toast.warning('Funcionalidade em desenvolvimento')
+                }
                 className={`flex h-9 w-9 items-center justify-center rounded-lg transition-colors md:h-8 md:w-8
                 ${location.pathname === '/b2b/companies' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}`}
               >
@@ -127,7 +131,10 @@ export default function MainLayout({ header }: MainLayoutProps) {
                   Home
                 </a>
                 <a
-                  href="/b2b/classes"
+                  // href="/b2b/classes"
+                  onClick={() =>
+                    toast.warning('Funcionalidade em desenvolvimento')
+                  }
                   className="flex items-center gap-4 px-2.5 text-foreground"
                 >
                   <GraduationCap className="h-5 w-5" />
