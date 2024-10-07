@@ -13,6 +13,13 @@ import { useForm } from 'react-hook-form'
 import { useUserStore } from '../../../../store/UserStore'
 import { useEffect, useState } from 'react'
 import { getCompanyById } from '../../../../services/company/get-company-by-id'
+import { Info } from 'lucide-react'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '../../../../components/ui/tooltip'
 
 const createCompanyForm = z.object({
   cpfCnpj: z.string().min(1, 'Campo CNPJ é obrigatório'),
@@ -22,6 +29,10 @@ const createCompanyForm = z.object({
   corporate_reason: z.string().min(1, 'Campo razão social é obrigatório'),
   regime: z.string().min(1, 'Campo regime é obrigatório'),
   opening_date: z.string().min(1, 'Campo data de abertura é obrigatório'),
+  payment_id: z
+    .string()
+    .min(1, 'Campo id de pagamento é obrigatório')
+    .optional(),
 })
 
 type CreateCompanyForm = z.infer<typeof createCompanyForm>
@@ -37,7 +48,7 @@ export function CompanyInfoForm() {
     register,
     handleSubmit,
     setValue,
-    formState: { isSubmitting, errors, isValid },
+    formState: { isSubmitting, errors },
   } = useForm<CreateCompanyForm>({
     resolver: zodResolver(createCompanyForm),
   })
@@ -65,6 +76,7 @@ export function CompanyInfoForm() {
       mobilePhone: data.mobilePhone,
       imageUrl: imageCompany,
       companyId: user.companyId ?? '',
+      paymentId: data.payment_id,
     }
 
     const response = await updateCompany(sendData)
@@ -98,6 +110,7 @@ export function CompanyInfoForm() {
     setValue('regime', company?.regime ?? '')
     setValue('opening_date', company?.openingDate ?? '')
     setValue('name', company?.name ?? '')
+    setValue('payment_id', company?.paymentId ?? '')
 
     if (response.company?.imageUrl) {
       setCompanyImage(response.company?.imageUrl)
@@ -199,6 +212,35 @@ export function CompanyInfoForm() {
         </div>
         <div className="flex w-full items-end gap-2">
           <div className="w-full space-y-2">
+            <div className="flex items-center gap-1">
+              <Label htmlFor="payment_id">ID de pagamento</Label>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Info size={14} className="text-primary" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>
+                      Este campo corresponde ao ID de pagamento. Só deve ser
+                      alterado caso solicitado pelo gerente de conta.
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+
+            <Input
+              id="payment_id"
+              {...register('payment_id')}
+              input={{
+                change: (val: string) => val,
+                value: undefined,
+              }}
+            />
+          </div>
+        </div>
+        <div className="flex w-full items-end gap-2">
+          <div className="w-full space-y-2">
             <Label htmlFor="name">Nome</Label>
             <Input
               id="name"
@@ -263,7 +305,7 @@ export function CompanyInfoForm() {
         <Button
           type="submit"
           className="w-full"
-          disabled={loadingCreateCompany || isSubmitting || !isValid}
+          disabled={loadingCreateCompany || isSubmitting}
         >
           Atualizar
         </Button>

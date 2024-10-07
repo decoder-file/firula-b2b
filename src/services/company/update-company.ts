@@ -18,6 +18,14 @@ export type UpdateCompanyRequest = {
   name?: string
   mobilePhone?: string
   imageUrl?: string
+  paymentId?: string
+}
+
+type UpdateCompanyType = {
+  name?: string
+  mobilePhone?: string
+  imageUrl?: string
+  paymentId?: string
 }
 
 export const updateCompany = async ({
@@ -25,12 +33,17 @@ export const updateCompany = async ({
   mobilePhone,
   imageUrl,
   companyId,
+  paymentId,
 }: UpdateCompanyRequest): Promise<UpdateCompanyResponseType> => {
   try {
-    const data = {
+    const data: UpdateCompanyType = {
       name,
       mobilePhone,
-      imageUrl,
+      paymentId,
+    }
+
+    if (imageUrl !== '') {
+      data.imageUrl = imageUrl
     }
 
     const response: UpdateCompanyResponseApiType = await api.patch(
