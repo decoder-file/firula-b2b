@@ -16,6 +16,7 @@ import {
   getAddressByCep,
 } from '../../../../services/company/address'
 import { Search } from 'lucide-react'
+import { getCompanyAddressByCompanyId } from '../../../../services/company/address/get-address-by-company-id'
 
 const createAddressCompanyForm = z.object({
   zipCode: z.string().min(1, 'CEP é obrigatório'),
@@ -73,6 +74,30 @@ export function CompanyAddressForm() {
       setLoadingAddress(false)
     }
   }
+
+  const fetchDataCompany = async () => {
+    const response = await getCompanyAddressByCompanyId({
+      companyId: user.companyId ?? '',
+    })
+
+    if (!response.success) {
+      return
+    }
+
+    const { companyAddress } = response
+
+    setValue('zipCode', companyAddress?.zipCode ?? '')
+    setValue('street', companyAddress?.street ?? '')
+    setValue('neighborhood', companyAddress?.neighborhood ?? '')
+    setValue('number', companyAddress?.number ?? '')
+    setValue('city', companyAddress?.city ?? '')
+    setValue('state', companyAddress?.state ?? '')
+    setValue('complement', companyAddress?.complement ?? '')
+  }
+
+  useEffect(() => {
+    fetchDataCompany()
+  }, [])
 
   useEffect(() => {
     if (inputValue !== '' || inputValue !== undefined) {

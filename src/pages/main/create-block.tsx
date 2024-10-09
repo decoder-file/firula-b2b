@@ -63,6 +63,8 @@ type DayState = {
   active: boolean
   startTime: string
   endTime: string
+  isActiveDayUse: boolean
+  valueForHour: string
 }
 
 type DaysState = {
@@ -79,6 +81,8 @@ const initialDayState: DayState = {
   active: false,
   startTime: '',
   endTime: '',
+  isActiveDayUse: false,
+  valueForHour: '',
 }
 
 export function CreateBlockPage() {
@@ -174,6 +178,8 @@ export function CreateBlockPage() {
         startTime: values.startTime,
         endTime: values.endTime,
         active: values.active,
+        valueForHourDayUse: values.valueForHour,
+        dayUseActive: values.isActiveDayUse,
       })),
       companyId: user.companyId ?? '',
     })
@@ -359,6 +365,20 @@ export function CreateBlockPage() {
                 <div key={day}>
                   <DateTimeSection
                     active={days[day].active}
+                    isActiveDayUse={days[day].isActiveDayUse}
+                    valueForHour={days[day].valueForHour}
+                    setIsActiveDayUse={(active) => {
+                      handleDayChange(day, {
+                        ...days[day],
+                        isActiveDayUse: active,
+                      })
+                    }}
+                    setValueForHour={(value) =>
+                      handleDayChange(day, {
+                        ...days[day],
+                        valueForHour: value,
+                      })
+                    }
                     setActive={(active) =>
                       handleDayChange(day, { ...days[day], active })
                     }
