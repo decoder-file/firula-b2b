@@ -1,6 +1,7 @@
 import { Outlet, useLocation } from 'react-router-dom'
 
 import {
+  CalendarDays,
   GraduationCap,
   Home,
   LandPlot,
@@ -74,6 +75,19 @@ export default function MainLayout({ header }: MainLayoutProps) {
           <Tooltip>
             <TooltipTrigger asChild>
               <a
+                href="/b2b/agenda"
+                className={`flex h-9 w-9 items-center justify-center rounded-lg transition-colors md:h-8 md:w-8
+                ${location.pathname === '/b2b/agenda' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+              >
+                <CalendarDays className="h-5 w-5" />
+                <span className="sr-only">Agenda</span>
+              </a>
+            </TooltipTrigger>
+            <TooltipContent side="right">Agenda</TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <a
                 href="/b2b/blocks"
                 className={`flex h-9 w-9 items-center justify-center rounded-lg transition-colors md:h-8 md:w-8
                 ${location.pathname === '/b2b/blocks' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}`}
@@ -139,6 +153,16 @@ export default function MainLayout({ header }: MainLayoutProps) {
                 >
                   <GraduationCap className="h-5 w-5" />
                   Aulas
+                </a>
+                <a
+                  href="/b2b/agenda"
+                  onClick={() =>
+                    toast.warning('Funcionalidade em desenvolvimento')
+                  }
+                  className="flex items-center gap-4 px-2.5 text-foreground"
+                >
+                  <CalendarDays className="h-5 w-5" />
+                  Agenda
                 </a>
                 <a
                   href="/b2b/blocks"
