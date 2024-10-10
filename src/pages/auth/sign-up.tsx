@@ -31,7 +31,7 @@ const signUpForm = z.object({
     .max(255, 'Sobrenome muito grande'),
   email: z.string().email('Email inválido'),
   cpf: z.string().min(1, 'CPF é obrigatória'),
-  password: z.string().min(8, 'Senha muito curta, tente uma senha mais forte.'),
+  password: z.string().min(1, 'Senha muito curta, tente uma senha mais forte.'),
   confirmPassword: z.string().min(1, 'Confirmação de senha é obrigatória'),
 })
 
@@ -44,6 +44,10 @@ export function SignUp() {
 
   const [acceptTerms, setAcceptTerms] = useState(false)
   const [loadingSignUp, setLoadingSignUp] = useState(false)
+
+  const capitalizeFirstLetter = (value: string) => {
+    return value.charAt(0).toUpperCase() + value.slice(1)
+  }
 
   const {
     register,
@@ -69,8 +73,16 @@ export function SignUp() {
         setLoadingSignUp(false)
         return
       }
+      if (data.password.length < 8) {
+        toast.error('A senha deve ter no mínimo 8 caracteres!')
+        setLoadingSignUp(false)
+        return
+      }
       const requestData = {
-        name: data.name + ' ' + data.lastName,
+        name:
+          capitalizeFirstLetter(data.name) +
+          ' ' +
+          capitalizeFirstLetter(data.lastName),
         email: data.email,
         password: data.password,
         cpf: data.cpf.replace(/[^\d]/g, ''),
@@ -276,7 +288,9 @@ export function SignUp() {
             <Button
               type="submit"
               className="w-full"
-              disabled={loadingSignUp || isSubmitting || !isValid}
+              disabled={
+                loadingSignUp || isSubmitting || !isValid || !acceptTerms
+              }
             >
               Cadastrar
             </Button>
