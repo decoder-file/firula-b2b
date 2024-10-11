@@ -15,6 +15,7 @@ import CostumersPage from './pages/main/costumers'
 import { EditBlockPage } from './pages/main/edit-block'
 import { SettingsPage } from './pages/main/settings'
 import AgendaPage from './pages/main/agenda'
+import CreateBlockHourPage from './pages/main/create-block-hour'
 
 export const router = createBrowserRouter([
   {
@@ -117,6 +118,15 @@ export const router = createBrowserRouter([
       {
         path: '/b2b/agenda',
         element: <AgendaPage />,
+      },
+    ],
+  },
+  {
+    element: <MainLayout header={undefined} />,
+    children: [
+      {
+        path: '/b2b/create-block-hour',
+        element: <CreateBlockHourPage />,
       },
     ],
   },

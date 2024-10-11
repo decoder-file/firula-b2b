@@ -1,13 +1,11 @@
 import { useNavigate } from 'react-router-dom'
 import { Button } from '../components/ui/button'
-import { Helmet } from 'react-helmet-async'
 
 export function PageNotFound() {
   const navigate = useNavigate()
 
   return (
     <>
-      <Helmet title="Cadastro" />
       <main className="grid min-h-full place-items-center  px-6 py-24 sm:py-32 lg:px-8">
         <div className="text-center">
           <p className="text-7xl font-semibold text-primary">404</p>

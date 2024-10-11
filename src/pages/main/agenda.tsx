@@ -46,6 +46,7 @@ import {
 import { maskCPF } from '../../utils/Mask'
 import { BlockType, getAllBlocks } from '../../services/blocks'
 import moment from 'moment'
+import { useNavigate } from 'react-router-dom'
 
 interface SchedulingTableType {
   id: string
@@ -59,6 +60,8 @@ interface SchedulingTableType {
 }
 
 export default function AgendaPage() {
+  const navigate = useNavigate()
+
   const { user } = useUserStore()
 
   const [sorting, setSorting] = React.useState<SortingState>([])
@@ -181,117 +184,125 @@ export default function AgendaPage() {
     <>
       <Helmet title="Agenda" />
 
-      <div className="flex items-center gap-3">
-        <div className=" flex flex-col">
-          <Label className="mb-2 text-sm font-semibold">Dia da semana</Label>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant={'outline'}
-                className={cn(
-                  'w-[240px] justify-start text-left font-normal',
-                  !date && 'text-muted-foreground',
-                )}
-              >
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {date ? format(date, 'PPP') : <span>Selecione um dia</span>}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-              <Calendar
-                mode="single"
-                selected={date}
-                onSelect={setDate}
-                initialFocus
-                lang="pt"
-              />
-            </PopoverContent>
-          </Popover>
-        </div>
-        {!loadingBlock && (
-          <>
-            <div>
-              <Label className="text-sm font-semibold">Quadra</Label>
-
-              <Select onValueChange={(e) => setBlockId(e)}>
-                <SelectTrigger className="mt-2">
-                  <SelectValue placeholder="Selecione a quadra para filtrar" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    {block.map((type) => (
-                      <SelectItem key={type.id} value={type.id}>
-                        {type.name}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
-          </>
-        )}
-      </div>
-
-      <div className="mt-4">
-        {loading ? (
-          <div className="mb-8 flex flex-col items-center justify-center">
-            <img src={LoadingGif} alt="Loading..." className="flex w-40" />
-            <p className="mt-8 text-center text-base opacity-40">
-              Estamos carregando seus agendamentos!
-            </p>
+      <div>
+        <Button
+          onClick={() => navigate('/b2b/create-block-hour')}
+          className="mb-8"
+        >
+          Bloquear horário
+        </Button>
+        <div className="flex items-center gap-3">
+          <div className=" flex flex-col">
+            <Label className="mb-2 text-sm font-semibold">Dia da semana</Label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant={'outline'}
+                  className={cn(
+                    'w-[240px] justify-start text-left font-normal',
+                    !date && 'text-muted-foreground',
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {date ? format(date, 'PPP') : <span>Selecione um dia</span>}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={date}
+                  onSelect={setDate}
+                  initialFocus
+                  lang="pt"
+                />
+              </PopoverContent>
+            </Popover>
           </div>
-        ) : (
-          <div className="rounded-md border">
-            <Table>
-              <TableHeader>
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <TableRow key={headerGroup.id}>
-                    {headerGroup.headers.map((header) => {
-                      return (
-                        <TableHead key={header.id}>
-                          {header.isPlaceholder
-                            ? null
-                            : flexRender(
-                                header.column.columnDef.header,
-                                header.getContext(),
-                              )}
-                        </TableHead>
-                      )
-                    })}
-                  </TableRow>
-                ))}
-              </TableHeader>
-              <TableBody>
-                {table.getRowModel().rows?.length ? (
-                  table.getRowModel().rows.map((row) => (
-                    <TableRow
-                      key={row.id}
-                      data-state={row.getIsSelected() && 'selected'}
-                    >
-                      {row.getVisibleCells().map((cell) => (
-                        <TableCell key={cell.id}>
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext(),
-                          )}
-                        </TableCell>
+          {!loadingBlock && (
+            <>
+              <div>
+                <Label className="text-sm font-semibold">Quadra</Label>
+
+                <Select onValueChange={(e) => setBlockId(e)}>
+                  <SelectTrigger className="mt-2">
+                    <SelectValue placeholder="Selecione a quadra para filtrar" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      {block.map((type) => (
+                        <SelectItem key={type.id} value={type.id}>
+                          {type.name}
+                        </SelectItem>
                       ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
+            </>
+          )}
+        </div>
+
+        <div className="mt-4">
+          {loading ? (
+            <div className="mb-8 flex flex-col items-center justify-center">
+              <img src={LoadingGif} alt="Loading..." className="flex w-40" />
+              <p className="mt-8 text-center text-base opacity-40">
+                Estamos carregando seus agendamentos!
+              </p>
+            </div>
+          ) : (
+            <div className="rounded-md border">
+              <Table>
+                <TableHeader>
+                  {table.getHeaderGroups().map((headerGroup) => (
+                    <TableRow key={headerGroup.id}>
+                      {headerGroup.headers.map((header) => {
+                        return (
+                          <TableHead key={header.id}>
+                            {header.isPlaceholder
+                              ? null
+                              : flexRender(
+                                  header.column.columnDef.header,
+                                  header.getContext(),
+                                )}
+                          </TableHead>
+                        )
+                      })}
                     </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell
-                      colSpan={columns.length}
-                      className="h-24 text-center"
-                    >
-                      Nem uma quadra encontrado.
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </div>
-        )}
+                  ))}
+                </TableHeader>
+                <TableBody>
+                  {table.getRowModel().rows?.length ? (
+                    table.getRowModel().rows.map((row) => (
+                      <TableRow
+                        key={row.id}
+                        data-state={row.getIsSelected() && 'selected'}
+                      >
+                        {row.getVisibleCells().map((cell) => (
+                          <TableCell key={cell.id}>
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext(),
+                            )}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell
+                        colSpan={columns.length}
+                        className="h-24 text-center"
+                      >
+                        Nem uma quadra encontrado.
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+          )}
+        </div>
       </div>
     </>
   )
