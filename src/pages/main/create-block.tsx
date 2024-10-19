@@ -46,17 +46,10 @@ const sport = [
   'BASKETBALL',
   'FUTSAL',
   'TENNIS',
-  'TABLE_TENNIS',
   'HANDBALL',
-  'SWIMMING',
-  'ATHLETICS',
-  'SURFING',
-  'JIU_JITSU',
-  'BOXING',
-  'MMA',
-  'CAPOEIRA',
-  'BEACH_SOCCER',
   'FOOTVOLLEY',
+  'BEACH_TENNIS',
+  'PETECA',
 ]
 
 type DayState = {
