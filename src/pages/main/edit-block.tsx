@@ -143,6 +143,17 @@ export function EditBlockPage() {
 
       return false
     }
+
+    if (
+      imageUrl &&
+      imageUrl[0].type !== 'image/png' &&
+      imageUrl[0].type !== 'image/jpg'
+    ) {
+      toast.error('A imagem deve ser do tipo PNG ou JPG.')
+      setLoading(false)
+      return
+    }
+
     setLoading(true)
 
     let imageBlock = ''

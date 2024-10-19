@@ -146,6 +146,17 @@ export function CreateBlockPage() {
     setLoading(true)
 
     let imageBlock = ''
+
+    if (
+      imageUrl &&
+      imageUrl[0].type !== 'image/png' &&
+      imageUrl[0].type !== 'image/jpg'
+    ) {
+      toast.error('A imagem deve ser do tipo PNG ou JPG.')
+      setLoading(false)
+      return
+    }
+
     if (imageUrl) {
       const responseImage: GetUrlImageType = (await getUrlImage(
         data.name.replace(/\s/g, '') + '_block',
