@@ -13,7 +13,7 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   getAllTypeBlock,
   TypeBlockType,
@@ -22,20 +22,13 @@ import { GetUrlImageType } from '../../services/image'
 import { getUrlImage } from '../../services/image/get-url-image'
 import axios from 'axios'
 import { useNavigate, useParams } from 'react-router-dom'
-import {
-  translateSportToPortuguese,
-  Sport,
-  translateDiaWeek,
-} from '../../utils/functions'
-import { DateTimeSection } from '../../components/date-time-section'
-import { capitalizeEachWord, maskReal } from '../../utils/Mask'
+import { translateSportToPortuguese, Sport } from '../../utils/functions'
 import { getBlockById } from '../../services/blocks/get-block-by-id'
 import { ScreenLoading } from '../../components/screen-loading'
 import { updateBlocks } from '../../services/blocks'
 
 const createBlockForm = z.object({
   name: z.string().min(1, 'Nome é obrigatório'),
-  valueForHour: z.string().min(1, 'Valor por hora é obrigatório'),
 })
 
 type CreateBlockForm = z.infer<typeof createBlockForm>
@@ -53,32 +46,6 @@ const sport = [
   'PETECA',
 ]
 
-type DayState = {
-  active: boolean
-  startTime: string
-  endTime: string
-  isActiveDayUse: boolean
-  valueForHour: string
-}
-
-type DaysState = {
-  monday: DayState
-  tuesday: DayState
-  wednesday: DayState
-  thursday: DayState
-  friday: DayState
-  saturday: DayState
-  sunday: DayState
-}
-
-const initialDayState: DayState = {
-  active: false,
-  startTime: '',
-  endTime: '',
-  valueForHour: '',
-  isActiveDayUse: false,
-}
-
 export function EditBlockPage() {
   const navigate = useNavigate()
   const { blockId } = useParams()
@@ -91,25 +58,6 @@ export function EditBlockPage() {
   const [imageUrl, setImageUrl] = useState<FileList | null>(null)
   const [typeBlockList, setTypeBlockList] = useState<TypeBlockType[]>([])
   const [sports, setSports] = useState<string[]>([])
-  const [days, setDays] = useState<DaysState>({
-    monday: initialDayState,
-    tuesday: initialDayState,
-    wednesday: initialDayState,
-    thursday: initialDayState,
-    friday: initialDayState,
-    saturday: initialDayState,
-    sunday: initialDayState,
-  })
-
-  const handleDayChange = useCallback(
-    (day: keyof DaysState, newState: DayState) => {
-      setDays((prevDays) => ({
-        ...prevDays,
-        [day]: newState,
-      }))
-    },
-    [],
-  )
 
   const {
     register,
@@ -174,17 +122,9 @@ export function EditBlockPage() {
     const response = await updateBlocks({
       name: data.name,
       typeBlockId: typeBlock,
-      valueForHour: data.valueForHour.replace(',', ''),
+      valueForHour: '0',
       imageUrl: imageBlock,
       sports,
-      openingHours: Object.entries(days).map(([day, values]) => ({
-        dayOfWeek: day,
-        startTime: values.startTime,
-        endTime: values.endTime,
-        active: values.active,
-        dayUseActive: values.isActiveDayUse,
-        valueForHourDayUse: values.valueForHour.replace(',', ''),
-      })),
       blockId: blockId ?? '',
     })
 
@@ -213,22 +153,6 @@ export function EditBlockPage() {
     const response = await getBlockById({ blockId: blockId ?? '' })
     if (response.success) {
       setValue('name', response.block?.name ?? '')
-      setValue('valueForHour', maskReal(response.block?.valueForHour ?? ''))
-      setDays(
-        response.block?.openingHours?.reduce(
-          (acc, item) => {
-            acc[item.dayOfWeek as keyof DaysState] = {
-              active: item.active,
-              startTime: item.startTime,
-              endTime: item.endTime,
-              isActiveDayUse: item.dayUseActive,
-              valueForHour: item.valueForHourDayUse,
-            }
-            return acc
-          },
-          { ...days },
-        ) ?? { ...days },
-      )
       setSports(
         response.block?.sports.map(
           (sport) => sport.toLocaleUpperCase() as string,
@@ -334,31 +258,6 @@ export function EditBlockPage() {
                     </span>
                   )}
                 </div>
-
-                <div className="w-full space-y-2">
-                  <Label className="text-sm font-semibold" htmlFor="lastName">
-                    Valor por hora
-                  </Label>
-                  <Input
-                    id="valueForHour"
-                    {...register('valueForHour', {
-                      onChange: (e) => {
-                        e.target.value = maskReal(e.target.value)
-                      },
-                    })}
-                    input={{
-                      mask: maskReal,
-                      maxLength: 100,
-                      change: (val: string) => maskReal(val),
-                      value: undefined,
-                    }}
-                  />
-                  {errors.valueForHour && (
-                    <span className="text-xs text-red-600">
-                      {errors.valueForHour.message}
-                    </span>
-                  )}
-                </div>
               </div>
               <div className="mt-2 w-full">
                 <Label className="text-sm font-semibold">Tipo da quadra</Label>
@@ -380,62 +279,6 @@ export function EditBlockPage() {
                     </SelectGroup>
                   </SelectContent>
                 </Select>
-              </div>
-
-              <div className="mt-2 w-full">
-                <Label className="text-sm font-semibold">
-                  Horário de funcionamento da quadra
-                </Label>
-
-                <div className="w-full justify-between p-4">
-                  {(
-                    [
-                      'monday',
-                      'tuesday',
-                      'wednesday',
-                      'thursday',
-                      'friday',
-                      'saturday',
-                      'sunday',
-                    ] as (keyof DaysState)[]
-                  ).map((day, index) => (
-                    <div key={day}>
-                      <DateTimeSection
-                        active={days[day].active}
-                        isActiveDayUse={days[day].isActiveDayUse}
-                        valueForHour={days[day].valueForHour}
-                        setIsActiveDayUse={(active) => {
-                          handleDayChange(day, {
-                            ...days[day],
-                            isActiveDayUse: active,
-                          })
-                        }}
-                        setValueForHour={(value) =>
-                          handleDayChange(day, {
-                            ...days[day],
-                            valueForHour: value,
-                          })
-                        }
-                        setActive={(active) =>
-                          handleDayChange(day, { ...days[day], active })
-                        }
-                        title={translateDiaWeek(capitalizeEachWord(day))}
-                        setEndTime={(times) =>
-                          handleDayChange(day, { ...days[day], endTime: times })
-                        }
-                        setStartTime={(times) =>
-                          handleDayChange(day, {
-                            ...days[day],
-                            startTime: times,
-                          })
-                        }
-                        startTime={days[day].startTime}
-                        endTime={days[day].endTime}
-                      />
-                      {index < 6 && <div className="mt-3" />}
-                    </div>
-                  ))}
-                </div>
               </div>
 
               <div className="mt-2 w-full">

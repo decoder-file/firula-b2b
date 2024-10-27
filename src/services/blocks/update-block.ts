@@ -12,7 +12,6 @@ export type UpdateBlocksRequest = {
   valueForHour?: string
   typeBlockId?: string
   isActive?: boolean
-  openingHours?: OpeningHoursType[]
   sports?: string[]
   imageUrl?: string
 }
@@ -23,7 +22,6 @@ export const updateBlocks = async ({
   valueForHour,
   typeBlockId,
   isActive,
-  openingHours,
   sports,
   imageUrl,
 }: UpdateBlocksRequest): Promise<{ success: boolean }> => {
@@ -42,10 +40,6 @@ export const updateBlocks = async ({
       typeBlockId,
       isActive,
       imageUrl,
-    }
-
-    if (openingHours) {
-      data.openingHours = openingHours
     }
 
     if (sports) {

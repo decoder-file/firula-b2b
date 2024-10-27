@@ -13,7 +13,7 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   getAllTypeBlock,
   TypeBlockType,
@@ -23,18 +23,11 @@ import { getUrlImage } from '../../services/image/get-url-image'
 import axios from 'axios'
 import { createBlock } from '../../services/blocks/create-block'
 import { useNavigate } from 'react-router-dom'
-import {
-  translateSportToPortuguese,
-  Sport,
-  translateDiaWeek,
-} from '../../utils/functions'
-import { DateTimeSection } from '../../components/date-time-section'
-import { capitalizeEachWord, maskReal } from '../../utils/Mask'
+import { translateSportToPortuguese, Sport } from '../../utils/functions'
 import { useUserStore } from '../../store/UserStore'
 
 const createBlockForm = z.object({
   name: z.string().min(1, 'Nome é obrigatório'),
-  valueForHour: z.string().min(1, 'Valor por hora é obrigatório'),
 })
 
 type CreateBlockForm = z.infer<typeof createBlockForm>
@@ -52,32 +45,6 @@ const sport = [
   'PETECA',
 ]
 
-type DayState = {
-  active: boolean
-  startTime: string
-  endTime: string
-  isActiveDayUse: boolean
-  valueForHour: string
-}
-
-type DaysState = {
-  monday: DayState
-  tuesday: DayState
-  wednesday: DayState
-  thursday: DayState
-  friday: DayState
-  saturday: DayState
-  sunday: DayState
-}
-
-const initialDayState: DayState = {
-  active: false,
-  startTime: '',
-  endTime: '',
-  isActiveDayUse: false,
-  valueForHour: '',
-}
-
 export function CreateBlockPage() {
   const navigate = useNavigate()
   const { user } = useUserStore()
@@ -88,29 +55,6 @@ export function CreateBlockPage() {
   const [typeBlockList, setTypeBlockList] = useState<TypeBlockType[]>([])
   const [loadingTypeBlock, setLoadingTypeBlock] = useState<boolean>(true)
   const [sports, setSports] = useState<string[]>([])
-  const [days, setDays] = useState<DaysState>({
-    monday: initialDayState,
-    tuesday: initialDayState,
-    wednesday: initialDayState,
-    thursday: initialDayState,
-    friday: initialDayState,
-    saturday: initialDayState,
-    sunday: initialDayState,
-  })
-
-  useEffect(() => {
-    console.log('days', JSON.stringify(days))
-  }, [days])
-
-  const handleDayChange = useCallback(
-    (day: keyof DaysState, newState: DayState) => {
-      setDays((prevDays) => ({
-        ...prevDays,
-        [day]: newState,
-      }))
-    },
-    [],
-  )
 
   const {
     register,
@@ -130,6 +74,7 @@ export function CreateBlockPage() {
 
   async function handleRegisterSportsFields(data: CreateBlockForm) {
     setLoading(true)
+    console.log('##########')
     if (sports.length === 0) {
       toast.error('Selecione pelo menos um esporte para continuar.')
       setLoading(false)
@@ -174,17 +119,9 @@ export function CreateBlockPage() {
     const response = await createBlock({
       name: data.name,
       typeBlockId: typeBlock,
-      valueForHour: data.valueForHour.replace(',', ''),
+      valueForHour: '0',
       imageUrl: imageBlock,
       sports,
-      openingHours: Object.entries(days).map(([day, values]) => ({
-        dayOfWeek: day,
-        startTime: values.startTime,
-        endTime: values.endTime,
-        active: values.active,
-        valueForHourDayUse: values.valueForHour,
-        dayUseActive: values.isActiveDayUse,
-      })),
       companyId: user.companyId ?? '',
     })
 
@@ -303,31 +240,6 @@ export function CreateBlockPage() {
                 </span>
               )}
             </div>
-
-            <div className="w-full space-y-2">
-              <Label className="text-sm font-semibold" htmlFor="lastName">
-                Valor por hora
-              </Label>
-              <Input
-                id="valueForHour"
-                {...register('valueForHour', {
-                  onChange: (e) => {
-                    e.target.value = maskReal(e.target.value)
-                  },
-                })}
-                input={{
-                  mask: maskReal,
-                  maxLength: 100,
-                  change: (val: string) => maskReal(val),
-                  value: undefined,
-                }}
-              />
-              {errors.valueForHour && (
-                <span className="text-xs text-red-600">
-                  {errors.valueForHour.message}
-                </span>
-              )}
-            </div>
           </div>
           <div className="mt-2 w-full">
             <Label className="text-sm font-semibold">Tipo da quadra</Label>
@@ -347,59 +259,6 @@ export function CreateBlockPage() {
                 </SelectContent>
               </Select>
             )}
-          </div>
-
-          <div className="mt-2 w-full">
-            <Label className="text-sm font-semibold">
-              Horário de funcionamento da quadra
-            </Label>
-
-            <div className="w-full justify-between p-4">
-              {(
-                [
-                  'monday',
-                  'tuesday',
-                  'wednesday',
-                  'thursday',
-                  'friday',
-                  'saturday',
-                  'sunday',
-                ] as (keyof DaysState)[]
-              ).map((day, index) => (
-                <div key={day}>
-                  <DateTimeSection
-                    active={days[day].active}
-                    isActiveDayUse={days[day].isActiveDayUse}
-                    valueForHour={days[day].valueForHour}
-                    setIsActiveDayUse={(active) => {
-                      handleDayChange(day, {
-                        ...days[day],
-                        isActiveDayUse: active,
-                      })
-                    }}
-                    setValueForHour={(value) =>
-                      handleDayChange(day, {
-                        ...days[day],
-                        valueForHour: value,
-                      })
-                    }
-                    setActive={(active) =>
-                      handleDayChange(day, { ...days[day], active })
-                    }
-                    title={translateDiaWeek(capitalizeEachWord(day))}
-                    setEndTime={(times) =>
-                      handleDayChange(day, { ...days[day], endTime: times })
-                    }
-                    setStartTime={(times) =>
-                      handleDayChange(day, { ...days[day], startTime: times })
-                    }
-                    startTime={days[day].startTime}
-                    endTime={days[day].endTime}
-                  />
-                  {index < 6 && <div className="mt-3" />}
-                </div>
-              ))}
-            </div>
           </div>
 
           <div className="mt-2 w-full">

@@ -154,7 +154,7 @@ export function DateTimeSection({
                     />
                   </div>
                 </div>
-              </div>{' '}
+              </div>
             </>
           ) : (
             <>

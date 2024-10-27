@@ -37,7 +37,6 @@ import {
   updateBlocks,
 } from '../../services/blocks'
 import { useNavigate } from 'react-router-dom'
-import { formatCurrency } from '../../utils/functions'
 import { useUserStore } from '../../store/UserStore'
 
 export default function BlocksPage() {
@@ -68,13 +67,6 @@ export default function BlocksPage() {
       ),
     },
     {
-      accessorKey: 'valueForHour',
-      header: 'Valor por hora',
-      cell: ({ row }) => (
-        <div> R$ {formatCurrency(row.getValue('valueForHour'))}</div>
-      ),
-    },
-    {
       accessorKey: 'isActive',
       header: 'Status',
 
@@ -101,7 +93,13 @@ export default function BlocksPage() {
               <DropdownMenuItem
                 onClick={() => navigate(`/b2b/edit-block/${blockId}`)}
               >
-                Visualizar detalhe da quadra
+                Editar info da quadra
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => navigate(`/b2b/court-schedules/${blockId}`)}
+              >
+                Horário de funcionamento da quadra
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem

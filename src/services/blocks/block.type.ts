@@ -3,6 +3,7 @@ export type OpeningHoursType = {
   startTime: string
   endTime: string
   active: boolean
+  priceForHour: string
   valueForHourDayUse: string
   dayUseActive: boolean
 }

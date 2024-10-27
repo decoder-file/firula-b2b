@@ -16,6 +16,7 @@ import { EditBlockPage } from './pages/main/edit-block'
 import { SettingsPage } from './pages/main/settings'
 import AgendaPage from './pages/main/agenda'
 import CreateBlockHourPage from './pages/main/create-block-hour'
+import { CourtSchedulesPage } from './pages/main/court-schedules'
 
 export const router = createBrowserRouter([
   {
@@ -82,6 +83,15 @@ export const router = createBrowserRouter([
       {
         path: '/b2b/create-block',
         element: <CreateBlockPage />,
+      },
+    ],
+  },
+  {
+    element: <MainLayout header={undefined} />,
+    children: [
+      {
+        path: '/b2b/court-schedules/:blockId',
+        element: <CourtSchedulesPage />,
       },
     ],
   },
