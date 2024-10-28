@@ -261,7 +261,7 @@ export default function CostumersPage() {
                         colSpan={columns.length}
                         className="h-24 text-center"
                       >
-                        Nem uma quadra encontrado.
+                        Nem um cliente encontrado.
                       </TableCell>
                     </TableRow>
                   )}

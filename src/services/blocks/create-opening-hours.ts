@@ -29,6 +29,7 @@ export const createOpeningHours = async ({
       companyBlockId,
       openingHours,
     }
+
     const url = `/company-block/opening-hours`
 
     const response: ResponseCreateOpeningHoursType = await api.post(url, data)

@@ -137,11 +137,15 @@ export function CourtSchedulesPage() {
       companyBlockId: blockId ?? '',
       openingHours: blocks.map((block) => ({
         dayOfWeek: block.dayOfWeek,
-        priceForHour: block.priceForHour.replace(',', ''),
+        priceForHour: block.priceForHour
+          ? block.priceForHour.replace(',', '')
+          : '',
         startTime: block.startTime,
         endTime: block.endTime,
         dayUseActive: block.dayUseActive,
-        valueForHourDayUse: block.valueForHourDayUse.replace(',', ''),
+        valueForHourDayUse: block.valueForHourDayUse
+          ? block.valueForHourDayUse.replace(',', '')
+          : '',
         active: block.active,
       })),
     })
