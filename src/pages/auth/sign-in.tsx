@@ -15,6 +15,16 @@ import LogoGreen from '../../assets/logo-green.png'
 import { useUserStore } from '../../store/UserStore'
 import { AuthenticateResponseType } from '../../services/user/authenticate'
 import api from '../../services/api'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '../../components/ui/alert-dialog'
 
 const signInForm = z.object({
   email: z.string().email('Email inválido'),
@@ -25,6 +35,8 @@ type SingInForm = z.infer<typeof signInForm>
 
 export function SignIn() {
   const { setUser } = useUserStore()
+  const [openModalIncompleteSignUp, setOpenModalIncompleteSignUp] =
+    useState(false)
 
   const navigate = useNavigate()
   const [loadingSignIn, setLoadingSignIn] = useState(false)
@@ -41,7 +53,9 @@ export function SignIn() {
     try {
       const response: AuthenticateResponseType = await api.post('sign-in', data)
 
-      const { token, user, company } = response.data
+      const { token, user } = response.data
+
+      console.log(response.data)
 
       if (user.role !== 'OWNER') {
         toast.error(
@@ -58,8 +72,15 @@ export function SignIn() {
         name: user.name,
         email: user.email,
         role: user.role,
-        companyId: company[0].id,
+        companyId: response.data?.company[0]?.id
+          ? response.data?.company[0]?.id
+          : '',
       })
+
+      if (!response.data?.company[0]?.id) {
+        setOpenModalIncompleteSignUp(true)
+        return
+      }
 
       toast.success('Login realizado com sucesso!')
 
@@ -71,6 +92,14 @@ export function SignIn() {
       setLoadingSignIn(false)
     }
   }
+
+  const handleCancel = () => {
+    localStorage.setItem('token', '')
+    localStorage.setItem('refreshToken', '')
+    setLoadingSignIn(false)
+    setOpenModalIncompleteSignUp(false)
+  }
+
   return (
     <>
       <Helmet title="Login" />
@@ -154,6 +183,25 @@ export function SignIn() {
           </footer>
         </div>
       </div>
+      <AlertDialog open={openModalIncompleteSignUp}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Cadastro incompleto</AlertDialogTitle>
+            <AlertDialogDescription>
+              Você precisa completar seu cadastro para acessar o painel do
+              Firula.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={handleCancel}>
+              Cancelar
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={() => navigate('/b2b/create-company')}>
+              Continuar
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   )
 }
