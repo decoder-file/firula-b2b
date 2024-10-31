@@ -188,7 +188,7 @@ export function CourtSchedulesPage() {
       active: block.active,
     }))
 
-    if (newBlocks) {
+    if (newBlocks && newBlocks?.length > 0) {
       setBlocks(newBlocks)
     }
 
