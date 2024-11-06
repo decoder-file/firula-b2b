@@ -17,11 +17,31 @@ import { SettingsPage } from './pages/main/settings'
 import AgendaPage from './pages/main/agenda'
 import CreateBlockHourPage from './pages/main/create-block-hour'
 import { CourtSchedulesPage } from './pages/main/court-schedules'
+import { SendTokenResetPassword } from './pages/auth/reset-password/send-token-reset-password'
+import { ResetPassword } from './pages/auth/reset-password/reset-password'
 
 export const router = createBrowserRouter([
   {
     path: '*',
     element: <PageNotFound />,
+  },
+  {
+    element: <AuthLayout />,
+    children: [
+      {
+        path: '/b2b/alterar-senha/enviar-token',
+        element: <SendTokenResetPassword />,
+      },
+    ],
+  },
+  {
+    element: <AuthLayout />,
+    children: [
+      {
+        path: '/b2b/alterar-senha/:userId',
+        element: <ResetPassword />,
+      },
+    ],
   },
   {
     element: <AuthLayout />,

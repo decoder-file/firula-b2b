@@ -19,6 +19,7 @@ export type CreateUsersRequest = {
   email: string
   cpf: string
   password: string
+  phoneNumber: string
 }
 
 export const createUser = async ({
@@ -26,6 +27,7 @@ export const createUser = async ({
   email,
   cpf,
   password,
+  phoneNumber,
 }: CreateUsersRequest): Promise<CreateUserResponseType> => {
   try {
     const data = {
@@ -34,6 +36,7 @@ export const createUser = async ({
       cpf,
       passwordHash: password,
       role: 'OWNER',
+      phoneNumber,
     }
 
     const response: CreateUserResponseApiType = await api.post('users', data)

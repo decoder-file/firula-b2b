@@ -78,6 +78,12 @@ export function maskCPFeCNPJ(doc: string) {
   return doc
 }
 
+export function maskToken(token: string) {
+  token = token.replace(/\D/g, '')
+
+  return token
+}
+
 export function maskPix(doc: string) {
   return doc
     .replace(/\W/g, '')
@@ -89,15 +95,17 @@ export function maskPix(doc: string) {
 }
 
 export function maskPhoneNumber(phone: string, internationalNumber = false) {
+  // Remove todos os caracteres não numéricos
   phone = phone.replace(/\D/g, '')
 
   if (internationalNumber) {
-    phone = phone.replace(/^(\+55)(\d)/, '$1')
-    phone = phone.replace(/(\d{2})(\d)/, '+$1 ($2')
+    // Aplica a máscara para números internacionais com o código +55
+    phone = phone.replace(/^(\d{2})(\d{2})(\d{5})(\d{4})$/, '+$1 ($2) $3-$4')
   } else {
-    phone = phone.replace(/(\d{2})(\d)/, '($1) $2')
+    // Aplica a máscara para números nacionais
+    phone = phone.replace(/^(\d{2})(\d{5})(\d{4})$/, '($1) $2-$3')
   }
-  phone = phone.replace(/(\d{5})(\d{1,4})$/, '$1-$2')
+
   return phone
 }
 

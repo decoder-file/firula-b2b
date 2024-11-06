@@ -13,7 +13,7 @@ import { Label } from '../../components/ui/label'
 
 import LogoGreen from '../../assets/logo-green.png'
 import { Checkbox } from '../../components/ui/checkbox'
-import { maskCPFeCNPJ } from '../../utils/Mask'
+import { maskCPFeCNPJ, maskPhoneNumber } from '../../utils/Mask'
 import { createUser } from '../../services/user'
 import { useUserStore } from '../../store/UserStore'
 
@@ -33,6 +33,7 @@ const signUpForm = z.object({
   cpf: z.string().min(1, 'CPF é obrigatória'),
   password: z.string().min(1, 'Senha muito curta, tente uma senha mais forte.'),
   confirmPassword: z.string().min(1, 'Confirmação de senha é obrigatória'),
+  phoneNumber: z.string().min(1, 'Telefone é obrigatório'),
 })
 
 type SignUpForm = z.infer<typeof signUpForm>
@@ -86,7 +87,11 @@ export function SignUp() {
         email: data.email,
         password: data.password,
         cpf: data.cpf.replace(/[^\d]/g, ''),
+        phoneNumber: data.phoneNumber.replace(/[^\d]/g, ''),
       }
+
+      console.log(requestData)
+      return
 
       const response = await createUser(requestData)
 
@@ -194,6 +199,29 @@ export function SignUp() {
             </div>
 
             <div className="flex w-full gap-2">
+              <div className="w-full space-y-2">
+                <Label htmlFor="cpf">Celular</Label>
+                <Input
+                  id="phoneNumber"
+                  {...register('phoneNumber', {
+                    onChange: (e) => {
+                      e.target.value = maskPhoneNumber(e.target.value)
+                    },
+                  })}
+                  input={{
+                    maxLength: 14,
+                    change: (val: string) => maskPhoneNumber(val),
+                    mask: maskPhoneNumber,
+                    value: undefined,
+                  }}
+                />
+
+                {errors.phoneNumber && (
+                  <span className="text-xs text-red-600">
+                    {errors.phoneNumber.message}
+                  </span>
+                )}
+              </div>
               <div className="w-full space-y-2">
                 <Label htmlFor="cpf">CPF</Label>
                 <Input
