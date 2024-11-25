@@ -80,7 +80,7 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    element: <MainLayout header={undefined} />,
+    element: <MainLayout title="Home" />,
     children: [
       {
         path: '/b2b/home',
@@ -89,7 +89,7 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    element: <MainLayout header={undefined} />,
+    element: <MainLayout title="Quadras" subTitle="Minhas quadras" />,
     children: [
       {
         path: '/b2b/blocks',
@@ -98,7 +98,7 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    element: <MainLayout header={undefined} />,
+    element: <MainLayout title="Quadras" subTitle="Criar nova quadra" />,
     children: [
       {
         path: '/b2b/create-block',
@@ -107,7 +107,9 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    element: <MainLayout header={undefined} />,
+    element: (
+      <MainLayout title="Quadras" subTitle="Horários de funcionamento" />
+    ),
     children: [
       {
         path: '/b2b/court-schedules/:blockId',
@@ -116,7 +118,7 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    element: <MainLayout header={undefined} />,
+    element: <MainLayout title="Quadras" subTitle="Editar quadra" />,
     children: [
       {
         path: '/b2b/edit-block/:blockId',
@@ -125,7 +127,7 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    element: <MainLayout header={undefined} />,
+    element: <MainLayout title="Clientes" />,
     children: [
       {
         path: '/b2b/costumers',
@@ -134,7 +136,7 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    element: <MainLayout header={undefined} />,
+    element: <MainLayout title="Configurações" />,
     children: [
       {
         path: '/b2b/config',
@@ -143,7 +145,7 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    element: <MainLayout header={undefined} />,
+    element: <MainLayout title="Agenda" />,
     children: [
       {
         path: '/b2b/agenda',
@@ -152,7 +154,7 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    element: <MainLayout header={undefined} />,
+    element: <MainLayout title="Agenda" subTitle="Bloquear horário" />,
     children: [
       {
         path: '/b2b/create-block-hour',

@@ -46,7 +46,6 @@ import {
 import { maskCPF } from '../../utils/Mask'
 import { BlockType, getAllBlocks } from '../../services/blocks'
 import moment from 'moment'
-import { useNavigate } from 'react-router-dom'
 
 interface SchedulingTableType {
   id: string
@@ -60,8 +59,6 @@ interface SchedulingTableType {
 }
 
 export default function AgendaPage() {
-  const navigate = useNavigate()
-
   const { user } = useUserStore()
 
   const [sorting, setSorting] = React.useState<SortingState>([])
@@ -185,12 +182,6 @@ export default function AgendaPage() {
       <Helmet title="Agenda" />
 
       <div>
-        <Button
-          onClick={() => navigate('/b2b/create-block-hour')}
-          className="mb-8"
-        >
-          Bloquear horário
-        </Button>
         <div className="flex items-center gap-3">
           <div className=" flex flex-col">
             <Label className="mb-2 text-sm font-semibold">Dia da semana</Label>
