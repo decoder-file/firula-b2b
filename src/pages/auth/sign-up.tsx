@@ -90,9 +90,6 @@ export function SignUp() {
         phoneNumber: data.phoneNumber.replace(/[^\d]/g, ''),
       }
 
-      console.log(requestData)
-      return
-
       const response = await createUser(requestData)
 
       if (!response.success) {
