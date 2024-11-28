@@ -19,6 +19,7 @@ import CreateBlockHourPage from './pages/main/create-block-hour'
 import { CourtSchedulesPage } from './pages/main/court-schedules'
 import { SendTokenResetPassword } from './pages/auth/reset-password/send-token-reset-password'
 import { ResetPassword } from './pages/auth/reset-password/reset-password'
+import { CreateEventPage } from './pages/main/event/create-event'
 
 export const router = createBrowserRouter([
   {
@@ -159,6 +160,15 @@ export const router = createBrowserRouter([
       {
         path: '/b2b/create-block-hour',
         element: <CreateBlockHourPage />,
+      },
+    ],
+  },
+  {
+    element: <MainLayout title="Evento" subTitle="Criar novo evento" />,
+    children: [
+      {
+        path: '/b2b/create-event',
+        element: <CreateEventPage />,
       },
     ],
   },

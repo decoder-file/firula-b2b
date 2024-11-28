@@ -74,7 +74,6 @@ export function CreateBlockPage() {
 
   async function handleRegisterSportsFields(data: CreateBlockForm) {
     setLoading(true)
-    console.log('##########')
     if (sports.length === 0) {
       toast.error('Selecione pelo menos um esporte para continuar.')
       setLoading(false)

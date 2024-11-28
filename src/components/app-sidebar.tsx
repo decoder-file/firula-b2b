@@ -80,6 +80,16 @@ const data = {
       ],
     },
     {
+      title: 'Eventos',
+      url: '#',
+      items: [
+        {
+          title: 'Criar novo evento',
+          url: '/b2b/create-event',
+        },
+      ],
+    },
+    {
       title: 'Configuração',
       url: '#',
       items: [
