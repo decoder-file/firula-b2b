@@ -20,6 +20,8 @@ import { CourtSchedulesPage } from './pages/main/court-schedules'
 import { SendTokenResetPassword } from './pages/auth/reset-password/send-token-reset-password'
 import { ResetPassword } from './pages/auth/reset-password/reset-password'
 import { CreateEventPage } from './pages/main/event/create-event'
+import { EditEventPage } from './pages/main/event/edit-event'
+import { ListEventsPage } from './pages/main/event/list-events'
 
 export const router = createBrowserRouter([
   {
@@ -169,6 +171,24 @@ export const router = createBrowserRouter([
       {
         path: '/b2b/create-event',
         element: <CreateEventPage />,
+      },
+    ],
+  },
+  {
+    element: <MainLayout title="Evento" subTitle="Editar evento" />,
+    children: [
+      {
+        path: '/b2b/edit-event',
+        element: <EditEventPage />,
+      },
+    ],
+  },
+  {
+    element: <MainLayout title="Evento" subTitle="Meus eventos" />,
+    children: [
+      {
+        path: '/b2b/list-events',
+        element: <ListEventsPage />,
       },
     ],
   },

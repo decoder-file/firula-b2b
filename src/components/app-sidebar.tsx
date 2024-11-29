@@ -84,6 +84,10 @@ const data = {
       url: '#',
       items: [
         {
+          title: 'Meus eventos',
+          url: '/b2b/list-events',
+        },
+        {
           title: 'Criar novo evento',
           url: '/b2b/create-event',
         },
