@@ -99,7 +99,11 @@ export function ListEventsPage() {
               >
                 <ExternalLink className="mr-2 h-4 w-4" />
               </Button>
-              <Button className="flex-1" variant="outline">
+              <Button
+                className="flex-1"
+                variant="outline"
+                onClick={() => navigate(`/b2b/event/1234/dashboard`)}
+              >
                 <ChartColumn className="mr-2 h-4 w-4" />
               </Button>
               <Button className="flex-1" variant="outline">

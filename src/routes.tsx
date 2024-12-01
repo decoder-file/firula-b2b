@@ -22,6 +22,7 @@ import { ResetPassword } from './pages/auth/reset-password/reset-password'
 import { CreateEventPage } from './pages/main/event/create-event'
 import { EditEventPage } from './pages/main/event/edit-event'
 import { ListEventsPage } from './pages/main/event/list-events'
+import { EventDashboardPage } from './pages/main/event/event-dashboard'
 
 export const router = createBrowserRouter([
   {
@@ -189,6 +190,15 @@ export const router = createBrowserRouter([
       {
         path: '/b2b/list-events',
         element: <ListEventsPage />,
+      },
+    ],
+  },
+  {
+    element: <MainLayout title="Evento" subTitle="Dashboard do evento" />,
+    children: [
+      {
+        path: '/b2b/event/:eventId/dashboard',
+        element: <EventDashboardPage />,
       },
     ],
   },
