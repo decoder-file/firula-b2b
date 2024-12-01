@@ -10,25 +10,39 @@ import {
   CardHeader,
   CardTitle,
 } from '../../../../components/ui/card'
+import { EventType } from '../../../../services/event'
+import moment from 'moment'
+import {
+  updateEvent,
+  UpdateEventRequest,
+} from '../../../../services/event/update-event'
+import { useNavigate } from 'react-router-dom'
 
-export default function EventEditForm() {
+type EventEditFormProps = {
+  event: EventType
+}
+
+export default function EventEditForm({ event }: EventEditFormProps) {
+  const navigate = useNavigate()
+
   const [eventData, setEventData] = useState({
-    title: '',
-    description: '',
-    imageUrl: '',
-    isActive: false,
-    startDate: '',
-    endDate: '',
-    startTime: '',
-    endTime: '',
-    street: '',
-    number: '',
-    complement: '',
-    neighborhood: '',
-    city: '',
-    state: '',
-    zipCode: '',
+    title: event.title,
+    description: event.description,
+    imageUrl: event.imageUrl,
+    isActive: event.isActive,
+    startDate: event.startDate,
+    endDate: event.endDate,
+    startTime: event.startTime,
+    endTime: event.endTime,
+    street: event.street,
+    number: event.number,
+    complement: event.complement,
+    neighborhood: event.neighborhood,
+    city: event.city,
+    state: event.state,
+    zipCode: event.zipCode,
   })
+  const [loadingUpdate, setLoadingUpdate] = useState(false)
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -42,8 +56,21 @@ export default function EventEditForm() {
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
+    setLoadingUpdate(true)
     e.preventDefault()
-    console.log(JSON.stringify(eventData))
+
+    const data: UpdateEventRequest = {
+      ...eventData,
+      startDate: moment(eventData.startDate).format('YYYY-MM-DD'),
+      endDate: moment(eventData.endDate).format('YYYY-MM-DD'),
+      eventId: event.id,
+    }
+
+    await updateEvent(data)
+
+    navigate(`/b2b/list-events`)
+
+    setLoadingUpdate(false)
   }
 
   return (
@@ -116,7 +143,7 @@ export default function EventEditForm() {
                 required
                 input={{
                   change: handleInputChange,
-                  value: eventData.startDate,
+                  value: moment(eventData.startDate).format('YYYY-MM-DD'),
                 }}
               />
             </div>
@@ -129,7 +156,7 @@ export default function EventEditForm() {
                 required
                 input={{
                   change: handleInputChange,
-                  value: eventData.endDate,
+                  value: moment(eventData.endDate).format('YYYY-MM-DD'),
                 }}
               />
             </div>
@@ -260,7 +287,7 @@ export default function EventEditForm() {
         </CardContent>
       </Card>
 
-      <Button type="submit" className="w-full">
+      <Button type="submit" className="w-full" disabled={loadingUpdate}>
         Salvar Evento
       </Button>
     </form>

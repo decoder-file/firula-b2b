@@ -137,7 +137,7 @@ export function CreateEventPage() {
       toast.success('Evento cadastrado com sucesso!')
     }
 
-    navigate('/b2b/events')
+    navigate(`/b2b/list-events`)
 
     setLoading(false)
   }
