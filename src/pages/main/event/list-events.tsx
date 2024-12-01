@@ -8,6 +8,8 @@ import {
 import { ChartColumn, Edit, ExternalLink, Tickets } from 'lucide-react'
 import ImagemBackground from '../../../assets/mock/imagem-background.png'
 import { useNavigate } from 'react-router-dom'
+import { TicketManagementDialog } from './components/ticket-management'
+import { useState } from 'react'
 
 interface Event {
   id: string
@@ -18,7 +20,6 @@ interface Event {
   image: string
 }
 
-// This would typically come from your database
 const events: Event[] = [
   {
     id: '1',
@@ -48,6 +49,8 @@ const events: Event[] = [
 
 export function ListEventsPage() {
   const navigate = useNavigate()
+
+  const [isOpenModalTicket, setIsOpenModalTicket] = useState(false)
 
   const openEventLink = () => {
     window.open(
@@ -106,12 +109,21 @@ export function ListEventsPage() {
               >
                 <ChartColumn className="mr-2 h-4 w-4" />
               </Button>
-              <Button className="flex-1" variant="outline">
+              <Button
+                className="flex-1"
+                variant="outline"
+                onClick={() => setIsOpenModalTicket(true)}
+              >
                 <Tickets className="mr-2 h-4 w-4" />
               </Button>
             </CardFooter>
           </Card>
         ))}
+
+        <TicketManagementDialog
+          isOpen={isOpenModalTicket}
+          setIsOpen={setIsOpenModalTicket}
+        />
       </div>
     </div>
   )

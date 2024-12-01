@@ -23,6 +23,8 @@ import { CreateEventPage } from './pages/main/event/create-event'
 import { EditEventPage } from './pages/main/event/edit-event'
 import { ListEventsPage } from './pages/main/event/list-events'
 import { EventDashboardPage } from './pages/main/event/event-dashboard'
+import { CreateTicketPage } from './pages/main/event/create-ticket'
+import { EditTicketPage } from './pages/main/event/edit-ticket'
 
 export const router = createBrowserRouter([
   {
@@ -199,6 +201,24 @@ export const router = createBrowserRouter([
       {
         path: '/b2b/event/:eventId/dashboard',
         element: <EventDashboardPage />,
+      },
+    ],
+  },
+  {
+    element: <MainLayout title="Evento" subTitle="Criar ingresso" />,
+    children: [
+      {
+        path: '/b2b/event/:eventId/create-ticket',
+        element: <CreateTicketPage />,
+      },
+    ],
+  },
+  {
+    element: <MainLayout title="Evento" subTitle="Editar ingresso" />,
+    children: [
+      {
+        path: '/b2b/event/:eventId/edit-ticket',
+        element: <EditTicketPage />,
       },
     ],
   },
