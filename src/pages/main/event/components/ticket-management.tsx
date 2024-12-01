@@ -15,35 +15,21 @@ import {
   TableRow,
 } from '../../../../components/ui/table'
 import { PencilIcon, Plus } from 'lucide-react'
-
-interface Ticket {
-  id: string
-  type: string
-  soldTotal: string
-  amount: number
-  fee: number
-  visible: boolean
-}
-
-const tickets: Ticket[] = [
-  {
-    id: '1',
-    type: 'Ingresso teste 01',
-    soldTotal: '0/100',
-    amount: 200.0,
-    fee: 20.0,
-    visible: true,
-  },
-]
+import { ticketTypes } from '../../../../services/event'
+import { formatCurrency } from '../../../../utils/functions'
 
 type TicketManagementDialogProps = {
   isOpen: boolean
   setIsOpen: (value: boolean) => void
+  eventTicket: ticketTypes[]
+  eventId: string
 }
 
 export function TicketManagementDialog({
   isOpen,
   setIsOpen,
+  eventTicket,
+  eventId,
 }: TicketManagementDialogProps) {
   const navigate = useNavigate()
 
@@ -55,33 +41,38 @@ export function TicketManagementDialog({
             <DialogTitle>Ingressos desse evento</DialogTitle>
             <Button
               size="sm"
-              onClick={() => navigate(`/b2b/event/2434/create-ticket`)}
+              onClick={() => navigate(`/b2b/event/${eventId}/create-ticket`)}
             >
               <Plus className="mr-2 h-4 w-4" />
               Criar Ingresso
             </Button>
           </div>
         </DialogHeader>
+
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>TIPO</TableHead>
+              <TableHead>NOME</TableHead>
               <TableHead>VENDIDOS/TOTAL</TableHead>
               <TableHead>VALOR DO INGRESSO</TableHead>
               <TableHead></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {tickets.map((ticket) => (
+            {eventTicket.map((ticket) => (
               <TableRow key={ticket.id}>
-                <TableCell>{ticket.type}</TableCell>
-                <TableCell>{ticket.soldTotal}</TableCell>
-                <TableCell>R$ {ticket.amount.toFixed(2)}</TableCell>
+                <TableCell>{ticket.title}</TableCell>
+                <TableCell>
+                  {ticket.quantitySold}/{ticket.amount}
+                </TableCell>
+                <TableCell>R$ {formatCurrency(ticket.price)}</TableCell>
                 <TableCell>
                   <Button
                     variant="ghost"
                     size="icon"
-                    onClick={() => navigate('/b2b/event/758/edit-ticket')}
+                    onClick={() =>
+                      navigate(`/b2b/event/${ticket.id}/edit-ticket`)
+                    }
                   >
                     <PencilIcon className="h-4 w-4" />
                   </Button>

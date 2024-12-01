@@ -9,55 +9,49 @@ import { ChartColumn, Edit, ExternalLink, Tickets } from 'lucide-react'
 import ImagemBackground from '../../../assets/mock/imagem-background.png'
 import { useNavigate } from 'react-router-dom'
 import { TicketManagementDialog } from './components/ticket-management'
-import { useState } from 'react'
-
-interface Event {
-  id: string
-  title: string
-  date: string
-  time: string
-  location: string
-  image: string
-}
-
-const events: Event[] = [
-  {
-    id: '1',
-    title: 'Réveillon WA 2025',
-    date: 'TER, 31 DEZ',
-    time: '20:00',
-    location: 'Av. Getúlio Vargas, 1300 - Belo Horizonte, MG',
-    image: '/placeholder.svg?height=200&width=400',
-  },
-  {
-    id: '2',
-    title: 'Summer Sports Festival',
-    date: 'SAB, 15 JAN',
-    time: '14:00',
-    location: 'Parque Municipal - Belo Horizonte, MG',
-    image: '/placeholder.svg?height=200&width=400',
-  },
-  {
-    id: '3',
-    title: 'Tennis Tournament 2025',
-    date: 'DOM, 20 JAN',
-    time: '09:00',
-    location: 'Clube Atlético - Belo Horizonte, MG',
-    image: '/placeholder.svg?height=200&width=400',
-  },
-]
+import { useEffect, useState } from 'react'
+import { EventType, getEvents } from '../../../services/event'
+import { useUserStore } from '../../../store/UserStore'
+import { ScreenLoading } from '../../../components/screen-loading'
+import moment from 'moment'
 
 export function ListEventsPage() {
   const navigate = useNavigate()
+  const { user } = useUserStore()
 
   const [isOpenModalTicket, setIsOpenModalTicket] = useState(false)
+  const [events, setEvents] = useState<EventType[]>([])
+  const [loadingEvents, setLoadingEvents] = useState(false)
+  const [eventSelected, setEventSelected] = useState<EventType | null>(null)
 
-  const openEventLink = () => {
+  const fetchEvents = async () => {
+    setLoadingEvents(true)
+    const response = await getEvents({ companyId: user.companyId || '' })
+    if (response.success && response.events) {
+      setEvents(response.events)
+    }
+    setLoadingEvents(false)
+  }
+
+  useEffect(() => {
+    fetchEvents()
+  }, [])
+
+  const openEventLink = (eventSlug: string) => {
     window.open(
-      `${import.meta.env.VITE__APP_B2C_URL}evento/3124`,
+      `${import.meta.env.VITE__APP_B2C_URL}evento/${eventSlug}`,
       '_blank',
       'noopener,noreferrer',
     )
+  }
+
+  const handleClickManagerTicket = (id: string) => {
+    setEventSelected(events.find((event) => event.id === id) || null)
+    setIsOpenModalTicket(true)
+  }
+
+  if (loadingEvents) {
+    return <ScreenLoading />
   }
 
   return (
@@ -82,37 +76,38 @@ export function ListEventsPage() {
               <h2 className="mb-2 text-2xl font-semibold">{event.title}</h2>
               <div className="space-y-1 text-sm text-muted-foreground">
                 <p className="font-medium text-primary">
-                  {event.date} • {event.time}
+                  {moment(event.startDate).format('DD/MM/YYYY')} •{' '}
+                  {event.startTime}
                 </p>
-                <p>{event.location}</p>
+                <p>{`${event?.street}, ${event?.number} - ${event?.neighborhood}, ${event?.city} - ${event?.state}`}</p>
               </div>
             </CardContent>
             <CardFooter className="gap-4 p-6 pt-0">
               <Button
                 variant="outline"
                 className="flex-1"
-                onClick={() => navigate(`/b2b/edit-event`)}
+                onClick={() => navigate(`/b2b/edit-event/${event.id}`)}
               >
                 <Edit className="mr-2 h-4 w-4" />
               </Button>
               <Button
                 className="flex-1"
                 variant="outline"
-                onClick={openEventLink}
+                onClick={() => openEventLink(event.slug)}
               >
                 <ExternalLink className="mr-2 h-4 w-4" />
               </Button>
               <Button
                 className="flex-1"
                 variant="outline"
-                onClick={() => navigate(`/b2b/event/1234/dashboard`)}
+                onClick={() => navigate(`/b2b/event/${event.id}/dashboard`)}
               >
                 <ChartColumn className="mr-2 h-4 w-4" />
               </Button>
               <Button
                 className="flex-1"
                 variant="outline"
-                onClick={() => setIsOpenModalTicket(true)}
+                onClick={() => handleClickManagerTicket(event.id)}
               >
                 <Tickets className="mr-2 h-4 w-4" />
               </Button>
@@ -123,6 +118,8 @@ export function ListEventsPage() {
         <TicketManagementDialog
           isOpen={isOpenModalTicket}
           setIsOpen={setIsOpenModalTicket}
+          eventTicket={eventSelected?.ticketTypes || []}
+          eventId={eventSelected?.id || ''}
         />
       </div>
     </div>
