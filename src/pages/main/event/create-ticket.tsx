@@ -1,8 +1,11 @@
 import * as React from 'react'
+import { toast } from 'sonner'
 import { useState } from 'react'
 import { CalendarIcon, Clock } from 'lucide-react'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
+import { useNavigate, useParams } from 'react-router-dom'
+import moment from 'moment'
 
 import { Button } from '../../../components/ui/button'
 import { Calendar } from '../../../components/ui/calendar'
@@ -14,10 +17,11 @@ import {
 } from '../../../components/ui/popover'
 import { Switch } from '../../../components/ui/switch'
 import { cn } from '../../../lib/utils'
-import { useNavigate } from 'react-router-dom'
+import { createEventTicketType, EventTypesType } from '../../../services/event'
 
 export function CreateTicketPage() {
   const navigate = useNavigate()
+  const { eventId } = useParams<{ eventId: string }>()
 
   const [title, setTitle] = useState('')
   const [quantity, setQuantity] = useState('')
@@ -27,21 +31,36 @@ export function CreateTicketPage() {
   const [endDate, setEndDate] = useState<Date | undefined>(new Date())
   const [endTime, setEndTime] = useState('')
 
+  const [loadingCreateTicket, setLoadingCreateTicket] = useState(false)
+
   const [isVisible, setIsVisible] = useState(true)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    setLoadingCreateTicket(true)
     e.preventDefault()
-    const formData = {
-      title,
-      quantity,
-      value,
-      startDate,
+    const formData: EventTypesType = {
+      amount: Number(quantity),
+      price: value,
+      isActive: isVisible,
+      startDate: moment(startDate).toDate(),
+      endDate: moment(endDate).toDate(),
       startTime,
-      endDate,
       endTime,
-      isVisible,
+      eventId: eventId || '',
+      title,
     }
-    console.log(formData)
+
+    const response = await createEventTicketType(formData)
+
+    if (response.success) {
+      toast.success('Ingresso criado com sucesso')
+      navigate(`/b2b/list-events`)
+
+      setLoadingCreateTicket(false)
+      return
+    }
+
+    setLoadingCreateTicket(false)
   }
 
   return (
@@ -72,7 +91,7 @@ export function CreateTicketPage() {
                   value: title,
                 }}
               />
-              <p className="mt-1 text-sm ">
+              <p className="mt-1 text-sm text-gray-700">
                 {45 - title.length} caracteres restantes
               </p>
             </div>
@@ -251,7 +270,9 @@ export function CreateTicketPage() {
               >
                 Cancelar
               </Button>
-              <Button type="submit">Criar ingresso</Button>
+              <Button type="submit" disabled={loadingCreateTicket}>
+                Criar ingresso
+              </Button>
             </div>
           </form>
         </div>
