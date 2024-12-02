@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { toast } from 'sonner'
 import { useState } from 'react'
 import { CalendarIcon, Clock } from 'lucide-react'
 import { format } from 'date-fns'
@@ -14,10 +15,18 @@ import {
 } from '../../../components/ui/popover'
 import { Switch } from '../../../components/ui/switch'
 import { cn } from '../../../lib/utils'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
+import { getEventTicketType } from '../../../services/event'
+import { ScreenLoading } from '../../../components/screen-loading'
+import {
+  updateEventTicketType,
+  EventTypesType,
+} from '../../../services/event/ticket-type/update-ticket'
+import moment from 'moment'
 
 export function EditTicketPage() {
   const navigate = useNavigate()
+  const { ticketTypeId } = useParams<{ ticketTypeId: string }>()
 
   const [title, setTitle] = useState('')
   const [quantity, setQuantity] = useState('')
@@ -26,22 +35,58 @@ export function EditTicketPage() {
   const [startTime, setStartTime] = useState('')
   const [endDate, setEndDate] = useState<Date | undefined>(new Date())
   const [endTime, setEndTime] = useState('')
-
   const [isVisible, setIsVisible] = useState(true)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [loadingTicketType, setLoadingTicketType] = useState(true)
+  const [loadingSubmit, setLoadingSubmit] = useState(false)
+
+  React.useEffect(() => {
+    getEventTicketType({ eventTicketId: ticketTypeId || '' }).then(
+      (response) => {
+        if (response.success && response.ticketType) {
+          setTitle(response.ticketType.title)
+          setQuantity(response.ticketType.amount.toString())
+          setValue(response.ticketType.price)
+          setStartDate(response.ticketType.startDate)
+          setStartTime(response.ticketType.startTime)
+          setEndDate(response.ticketType.endDate)
+          setEndTime(response.ticketType.endTime)
+          setIsVisible(response.ticketType.isActive)
+        }
+        setLoadingTicketType(false)
+      },
+    )
+  }, [ticketTypeId])
+
+  if (loadingTicketType) {
+    return <ScreenLoading />
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    setLoadingSubmit(true)
     e.preventDefault()
-    const formData = {
+    const formData: EventTypesType = {
       title,
-      quantity,
-      value,
-      startDate,
+      amount: Number(quantity),
+      price: value,
+      startDate: moment(startDate).toDate(),
+      endDate: moment(endDate).toDate(),
       startTime,
-      endDate,
       endTime,
-      isVisible,
+      isActive: isVisible,
+      ticketTypeId: ticketTypeId || '',
     }
-    console.log(formData)
+
+    const response = await updateEventTicketType(formData)
+
+    if (response.success) {
+      navigate('/b2b/list-events')
+      toast.success('Ingresso atualizado com sucesso!')
+      setLoadingSubmit(false)
+      return
+    }
+
+    setLoadingSubmit(false)
   }
 
   return (
@@ -72,7 +117,7 @@ export function EditTicketPage() {
                   value: title,
                 }}
               />
-              <p className="mt-1 text-sm ">
+              <p className="mt-1 text-sm text-gray-700">
                 {45 - title.length} caracteres restantes
               </p>
             </div>
@@ -251,7 +296,9 @@ export function EditTicketPage() {
               >
                 Cancelar
               </Button>
-              <Button type="submit">Criar ingresso</Button>
+              <Button type="submit" disabled={loadingSubmit}>
+                Salvar ingresso
+              </Button>
             </div>
           </form>
         </div>

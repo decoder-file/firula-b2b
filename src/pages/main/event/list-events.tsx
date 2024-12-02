@@ -67,7 +67,11 @@ export function ListEventsPage() {
           <Card key={event.id} className="overflow-hidden">
             <CardHeader className="p-0">
               <img
-                src={ImagemBackground}
+                src={
+                  event.imageUrl
+                    ? `https://pub-ed847887b3d7415384bbf5488c674561.r2.dev/${event.imageUrl}`
+                    : ImagemBackground
+                }
                 alt={event.title}
                 className="h-48 w-full object-cover"
               />

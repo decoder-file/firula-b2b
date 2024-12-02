@@ -1,4 +1,8 @@
 import { useState } from 'react'
+import { toast } from 'sonner'
+import moment from 'moment'
+import { useNavigate } from 'react-router-dom'
+
 import { Button } from '../../../../components/ui/button'
 import { Input } from '../../../../components/ui/input'
 import { Textarea } from '../../../../components/ui/textarea'
@@ -11,12 +15,10 @@ import {
   CardTitle,
 } from '../../../../components/ui/card'
 import { EventType } from '../../../../services/event'
-import moment from 'moment'
 import {
   updateEvent,
   UpdateEventRequest,
 } from '../../../../services/event/update-event'
-import { useNavigate } from 'react-router-dom'
 
 type EventEditFormProps = {
   event: EventType
@@ -66,9 +68,15 @@ export default function EventEditForm({ event }: EventEditFormProps) {
       eventId: event.id,
     }
 
-    await updateEvent(data)
+    const response = await updateEvent(data)
 
-    navigate(`/b2b/list-events`)
+    if (response.success) {
+      navigate(`/b2b/list-events`)
+      toast.success('Evento atualizado com sucesso!')
+      setLoadingUpdate(false)
+
+      return
+    }
 
     setLoadingUpdate(false)
   }

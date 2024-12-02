@@ -217,7 +217,7 @@ export const router = createBrowserRouter([
     element: <MainLayout title="Evento" subTitle="Editar ingresso" />,
     children: [
       {
-        path: '/b2b/event/:eventId/edit-ticket',
+        path: '/b2b/event/:ticketTypeId/edit-ticket',
         element: <EditTicketPage />,
       },
     ],

@@ -313,7 +313,7 @@ export function CreateEventPage() {
                             </span>
                           </p>
                           <p className="text-xs text-gray-500 dark:text-gray-400">
-                            PNG ou JPG (MAX. 400x400px)
+                            A dimensão recomendada é de 1600 x 838 (PNG ou JPG)
                           </p>
                         </div>
                         <input
@@ -324,6 +324,9 @@ export function CreateEventPage() {
                         />
                       </label>
                     </div>
+                    <p className="block text-sm font-medium text-gray-700">
+                      A dimensão recomendada é de 1600 x 838
+                    </p>
                   </div>
                 )}
                 {currentStep === 1 && (
