@@ -57,3 +57,25 @@ export type EventType = {
   companyId: string
   ticketTypes?: ticketTypes[]
 }
+
+export type UserType = {
+  id: string
+  name: string
+  email: string
+  cpf: string
+  mobilePhone: string
+}
+
+export type Ticket = {
+  id: string
+  purchaseDate: string
+  paymentDate: Date | null
+  status: string
+  keyPix: string | null
+  userId: string
+  createdAt: Date
+  updatedAt: Date
+  eventId: string
+  ticketTypeId: string
+  user: UserType
+}

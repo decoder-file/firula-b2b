@@ -10,8 +10,12 @@ import { Tabs, TabsContent } from '../../../components/ui/tabs'
 import { RecentSales } from './components/recent-sales'
 import { Overview } from './components/overview'
 import { ChevronRight, Eye } from 'lucide-react'
+import { useNavigate, useParams } from 'react-router-dom'
 
 export function EventDashboardPage() {
+  const navigate = useNavigate()
+  const { eventId } = useParams<{ eventId: string }>()
+
   return (
     <Layout>
       <Layout.Body>
@@ -21,7 +25,7 @@ export function EventDashboardPage() {
           className="space-y-4"
         >
           <TabsContent value="overview" className="space-y-4">
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">
@@ -41,7 +45,7 @@ export function EventDashboardPage() {
                   </svg>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">$45,231.89</div>
+                  <div className="text-2xl font-bold">R$ 45,231.89</div>
                 </CardContent>
               </Card>
               <Card>
@@ -79,28 +83,6 @@ export function EventDashboardPage() {
                   <div className="text-2xl font-bold">+12,234</div>
                 </CardContent>
               </Card>
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">
-                    active_now
-                  </CardTitle>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    className="h-4 w-4 text-muted-foreground"
-                  >
-                    <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-                  </svg>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">+573</div>
-                </CardContent>
-              </Card>
             </div>
             <div className="grid grid-cols-1 gap-4 lg:grid-cols-7">
               <Card className="col-span-1 lg:col-span-4">
@@ -115,7 +97,12 @@ export function EventDashboardPage() {
                 <CardHeader>
                   <CardTitle>Vendas recentes</CardTitle>
                   <CardDescription>
-                    <span className="flex cursor-pointer items-center gap-1 text-muted-foreground">
+                    <span
+                      className="flex cursor-pointer items-center gap-1 text-muted-foreground"
+                      onClick={() =>
+                        navigate(`/b2b/event/${eventId}/sales-list`)
+                      }
+                    >
                       Ver todas as vendas
                       <ChevronRight size={16} />
                     </span>

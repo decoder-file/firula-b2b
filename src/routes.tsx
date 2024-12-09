@@ -25,6 +25,7 @@ import { ListEventsPage } from './pages/main/event/list-events'
 import { EventDashboardPage } from './pages/main/event/event-dashboard'
 import { CreateTicketPage } from './pages/main/event/create-ticket'
 import { EditTicketPage } from './pages/main/event/edit-ticket'
+import SalesListPage from './pages/main/event/sales-list'
 
 export const router = createBrowserRouter([
   {
@@ -219,6 +220,15 @@ export const router = createBrowserRouter([
       {
         path: '/b2b/event/:ticketTypeId/edit-ticket',
         element: <EditTicketPage />,
+      },
+    ],
+  },
+  {
+    element: <MainLayout title="Evento" subTitle="Vendas" />,
+    children: [
+      {
+        path: '/b2b/event/:eventId/sales-list',
+        element: <SalesListPage />,
       },
     ],
   },
