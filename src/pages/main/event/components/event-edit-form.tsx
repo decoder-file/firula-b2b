@@ -19,6 +19,9 @@ import {
   updateEvent,
   UpdateEventRequest,
 } from '../../../../services/event/update-event'
+import { GetUrlImageType } from '../../../../services/image'
+import { getUrlImage } from '../../../../services/image/get-url-image'
+import axios from 'axios'
 
 type EventEditFormProps = {
   event: EventType
@@ -26,6 +29,8 @@ type EventEditFormProps = {
 
 export default function EventEditForm({ event }: EventEditFormProps) {
   const navigate = useNavigate()
+
+  const [imageUrl, setImageUrl] = useState<FileList | null>(null)
 
   const [eventData, setEventData] = useState({
     title: event.title,
@@ -57,12 +62,42 @@ export default function EventEditForm({ event }: EventEditFormProps) {
     setEventData((prev) => ({ ...prev, isActive: checked }))
   }
 
+  function handleChoseImage(e: React.ChangeEvent<HTMLInputElement>) {
+    setImageUrl(e.target.files)
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     setLoadingUpdate(true)
     e.preventDefault()
 
+    if (
+      imageUrl &&
+      imageUrl[0].type !== 'image/png' &&
+      imageUrl[0].type !== 'image/jpg'
+    ) {
+      toast.error('A imagem deve ser do tipo PNG ou JPG.')
+      setLoadingUpdate(false)
+      return
+    }
+
+    let imageBlock = ''
+    if (imageUrl) {
+      const responseImage: GetUrlImageType = (await getUrlImage(
+        eventData.title.replace(/\s/g, '') + '_event',
+      )) as GetUrlImageType
+
+      imageBlock = responseImage.data.url
+
+      await axios.put(responseImage.data.signedUrl, imageUrl[0], {
+        headers: {
+          'Content-Type': 'image/png',
+        },
+      })
+    }
+
     const data: UpdateEventRequest = {
       ...eventData,
+      imageUrl: imageUrl ? imageBlock : eventData.imageUrl,
       startDate: moment(eventData.startDate).format('YYYY-MM-DD'),
       endDate: moment(eventData.endDate).format('YYYY-MM-DD'),
       eventId: event.id,
@@ -114,14 +149,45 @@ export default function EventEditForm({ event }: EventEditFormProps) {
           </div>
           <div className="space-y-2">
             <Label htmlFor="imageUrl">Image URL</Label>
-            <Input
-              id="imageUrl"
-              name="imageUrl"
-              input={{
-                change: handleInputChange,
-                value: eventData.imageUrl,
-              }}
-            />
+            <div className="mb-2 flex w-full items-center justify-center">
+              <label
+                htmlFor="dropzone-file"
+                className="dark:hover:bg-bray-800 flex h-64 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+              >
+                <div className="flex flex-col items-center justify-center pb-6 pt-5">
+                  {imageUrl ? (
+                    <img
+                      src={URL.createObjectURL(imageUrl[0])}
+                      alt="Logo Firula"
+                      className="h-20 w-20"
+                    />
+                  ) : (
+                    <img
+                      src={`https://pub-ed847887b3d7415384bbf5488c674561.r2.dev/${eventData.imageUrl}`}
+                      alt="Logo Firula"
+                      className="h-20 w-20"
+                    />
+                  )}
+
+                  <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                    <span className="font-semibold">
+                      {eventData.imageUrl
+                        ? 'Clique para alterar a imagem'
+                        : 'Clique para carregar'}
+                    </span>
+                  </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    PNG ou JPG (MAX. 400x400px)
+                  </p>
+                </div>
+                <input
+                  id="dropzone-file"
+                  type="file"
+                  onChange={handleChoseImage}
+                  className="hidden"
+                />
+              </label>
+            </div>
           </div>
           <div className="flex items-center space-x-2">
             <Switch
@@ -295,7 +361,12 @@ export default function EventEditForm({ event }: EventEditFormProps) {
         </CardContent>
       </Card>
 
-      <Button type="submit" className="w-full" disabled={loadingUpdate}>
+      <Button
+        type="submit"
+        className="w-full"
+        disabled={loadingUpdate}
+        loading={loadingUpdate}
+      >
         Salvar Evento
       </Button>
     </form>
