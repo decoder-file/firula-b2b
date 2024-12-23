@@ -116,6 +116,11 @@ export default function EventEditForm({ event }: EventEditFormProps) {
     setLoadingUpdate(false)
   }
 
+  function handleDeleteBanner() {
+    setImageUrl(null)
+    setEventData((prev) => ({ ...prev, imageUrl: '' }))
+  }
+
   return (
     <form onSubmit={handleSubmit} className="mx-auto w-full space-y-8 py-8">
       <Card>
@@ -148,7 +153,17 @@ export default function EventEditForm({ event }: EventEditFormProps) {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="imageUrl">Image URL</Label>
+            <div className="flex w-full items-center justify-between">
+              <Label htmlFor="imageUrl">Image URL</Label>
+              <Button
+                type="button"
+                variant="link"
+                className="text-red-500"
+                onClick={handleDeleteBanner}
+              >
+                Remover banner
+              </Button>
+            </div>
             <div className="mb-2 flex w-full items-center justify-center">
               <label
                 htmlFor="dropzone-file"
