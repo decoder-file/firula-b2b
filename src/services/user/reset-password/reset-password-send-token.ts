@@ -48,6 +48,13 @@ export const resetPasswordSendToken = async ({
         success: false,
       }
     }
+    if (error.statusCode === 400) {
+      toast.error(error.message)
+      return {
+        userId: '',
+        success: false,
+      }
+    }
     toast.error('Erro ao enviar token, verifique os dados e tente novamente!')
     return {
       userId: '',
