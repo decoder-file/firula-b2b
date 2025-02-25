@@ -126,6 +126,7 @@ export function CompanyInfoForm() {
         <Label className="mb-1 text-sm font-semibold" htmlFor="lastName">
           Imagem da empresa
         </Label>
+
         <div className="mb-2 flex w-full items-center justify-center">
           <label
             htmlFor="dropzone-file"

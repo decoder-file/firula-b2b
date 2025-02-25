@@ -2,13 +2,16 @@ import { Helmet } from 'react-helmet-async'
 import { CompanyAddressForm } from './components/company-address-form'
 import { useState } from 'react'
 import { CompanyInfoForm } from './components/company-info-form'
+import { CompanyGallery } from './components/company-gallery'
 
 export function SettingsPage() {
   const [selectedTab, setSelectedTab] = useState<
-    'companyAddress' | 'companyInfo' | 'suporte'
-  >('companyAddress')
+    'companyAddress' | 'companyInfo' | 'suporte' | 'gallery'
+  >('gallery')
 
-  const changeTab = (tab: 'companyAddress' | 'companyInfo' | 'suporte') => {
+  const changeTab = (
+    tab: 'companyAddress' | 'companyInfo' | 'suporte' | 'gallery',
+  ) => {
     setSelectedTab(tab)
   }
 
@@ -18,6 +21,8 @@ export function SettingsPage() {
         return <CompanyAddressForm />
       case 'companyInfo':
         return <CompanyInfoForm />
+      case 'gallery':
+        return <CompanyGallery />
       case 'suporte':
         return <div>Suporte</div>
     }
@@ -43,6 +48,12 @@ export function SettingsPage() {
               className={`font-semibold ${selectedTab === 'companyInfo' && 'text-primary'} cursor-pointer`}
             >
               Dados da empresa
+            </a>
+            <a
+              onClick={() => changeTab('gallery')}
+              className={`font-semibold ${selectedTab === 'gallery' && 'text-primary'} cursor-pointer`}
+            >
+              Galeria de fotos
             </a>
             <a
               onClick={() => changeTab('suporte')}
