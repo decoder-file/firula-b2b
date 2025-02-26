@@ -33,6 +33,7 @@ const createCompanyForm = z.object({
     .string()
     .min(1, 'Campo id de pagamento é obrigatório')
     .optional(),
+  description: z.string().optional(),
 })
 
 type CreateCompanyForm = z.infer<typeof createCompanyForm>
@@ -77,6 +78,7 @@ export function CompanyInfoForm() {
       imageUrl: imageCompany,
       companyId: user.companyId ?? '',
       paymentId: data.payment_id,
+      description: data.description,
     }
 
     const response = await updateCompany(sendData)
@@ -111,6 +113,7 @@ export function CompanyInfoForm() {
     setValue('opening_date', company?.openingDate ?? '')
     setValue('name', company?.name ?? '')
     setValue('payment_id', company?.paymentId ?? '')
+    setValue('description', company?.description ?? '')
 
     if (response.company?.imageUrl) {
       setCompanyImage(response.company?.imageUrl)
@@ -298,6 +301,24 @@ export function CompanyInfoForm() {
             {errors.mobilePhone && (
               <span className="text-xs text-red-600">
                 {errors.mobilePhone.message}
+              </span>
+            )}
+          </div>
+        </div>
+        <div className="flex w-full items-end gap-2">
+          <div className="w-full space-y-2">
+            <Label htmlFor="description">Descrição</Label>
+            <Input
+              id="description"
+              {...register('description')}
+              input={{
+                change: (val: string) => val,
+                value: undefined,
+              }}
+            />
+            {errors.description && (
+              <span className="text-xs text-red-600">
+                {errors.description.message}
               </span>
             )}
           </div>

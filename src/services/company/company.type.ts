@@ -17,4 +17,5 @@ export type CompanyType = {
   updatedAt: string
   userId: string
   companyAddress: string
+  description: string
 }

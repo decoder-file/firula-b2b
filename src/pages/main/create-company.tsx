@@ -27,6 +27,7 @@ const createCompanyForm = z.object({
   corporate_reason: z.string().min(1, 'Campo razão social é obrigatório'),
   regime: z.string().min(1, 'Campo regime é obrigatório'),
   opening_date: z.string().min(1, 'Campo data de abertura é obrigatório'),
+  description: z.string().optional(),
 })
 
 type CreateCompanyForm = z.infer<typeof createCompanyForm>
@@ -106,6 +107,7 @@ export function CreateCompany() {
       opening_date: data.opening_date,
       userId: user.userId ?? '',
       imageUrl: imageCompany,
+      description: data.description,
     }
 
     const response = await createCompany(sendData)
@@ -330,6 +332,25 @@ export function CreateCompany() {
                     {errors.mobilePhone && (
                       <span className="text-xs text-red-600">
                         {errors.mobilePhone.message}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex w-full items-end gap-2">
+                  <div className="w-full space-y-2">
+                    <Label htmlFor="description">Descrição</Label>
+                    <Input
+                      id="description"
+                      {...register('description')}
+                      input={{
+                        change: (val: string) => val,
+                        value: undefined,
+                      }}
+                    />
+                    {errors.description && (
+                      <span className="text-xs text-red-600">
+                        {errors.description.message}
                       </span>
                     )}
                   </div>

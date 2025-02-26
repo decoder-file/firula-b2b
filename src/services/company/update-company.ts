@@ -19,6 +19,7 @@ export type UpdateCompanyRequest = {
   mobilePhone?: string
   imageUrl?: string
   paymentId?: string
+  description?: string
 }
 
 type UpdateCompanyType = {
@@ -26,6 +27,7 @@ type UpdateCompanyType = {
   mobilePhone?: string
   imageUrl?: string
   paymentId?: string
+  description?: string
 }
 
 export const updateCompany = async ({
@@ -34,12 +36,14 @@ export const updateCompany = async ({
   imageUrl,
   companyId,
   paymentId,
+  description,
 }: UpdateCompanyRequest): Promise<UpdateCompanyResponseType> => {
   try {
     const data: UpdateCompanyType = {
       name,
       mobilePhone,
       paymentId,
+      description,
     }
 
     if (imageUrl !== '') {

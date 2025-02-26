@@ -7,7 +7,7 @@ import { CompanyGallery } from './components/company-gallery'
 export function SettingsPage() {
   const [selectedTab, setSelectedTab] = useState<
     'companyAddress' | 'companyInfo' | 'suporte' | 'gallery'
-  >('gallery')
+  >('companyAddress')
 
   const changeTab = (
     tab: 'companyAddress' | 'companyInfo' | 'suporte' | 'gallery',
