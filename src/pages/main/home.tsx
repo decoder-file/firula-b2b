@@ -25,6 +25,23 @@ import { getStatistic, GetStatisticType } from '../../services/statistic'
 import { Skeleton } from '../../components/ui/skeleton'
 import { formatCurrency } from '../../utils/functions'
 import { Helmet } from 'react-helmet-async'
+import BannerAlert from '../../components/banner-alert'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '../../components/ui/alert-dialog'
+import {
+  getCompanyStatus,
+  GetCompanyStatusType,
+} from '../../services/company/get-company-status'
+import PaymentActivationModal from '../../components/payment-activation-modal'
+import { activeCompanyPaymentAccount } from '../../services/company/active-company-payment-account'
 
 export default function HomePage() {
   const { user } = useUserStore()
@@ -35,6 +52,14 @@ export default function HomePage() {
   )
   const [loadingStatistic, setLoadingStatistic] = React.useState(true)
   const [statisticData, setStatisticData] = React.useState<GetStatisticType>()
+  const [openModalIncompleteOnbording, setOpenModalIncompleteOnbording] =
+    React.useState(false)
+  const [companyStatus, setCompanyStatus] =
+    React.useState<GetCompanyStatusType>()
+  const [isModalOpen, setIsModalOpen] = React.useState(false)
+  const [loadingPaymentActivation, setLoadingPaymentActivation] =
+    React.useState(false)
+  const [loadingCompanyStatus, setLoadingCompanyStatus] = React.useState(true)
 
   const findAllScheduling = async () => {
     const response = await getAllScheduling({
@@ -55,9 +80,35 @@ export default function HomePage() {
     setLoadingStatistic(false)
   }
 
+  const fetchCompanyStatus = async () => {
+    const response = await getCompanyStatus({ companyId: user.companyId ?? '' })
+
+    if (response) {
+      setCompanyStatus(response)
+      setLoadingCompanyStatus(false)
+    }
+  }
+
+  const handlePaymentActivation = async () => {
+    setIsModalOpen(true)
+    setLoadingPaymentActivation(true)
+
+    await activeCompanyPaymentAccount({
+      companyId: user.companyId ?? '',
+    })
+
+    setIsModalOpen(false)
+    setLoadingPaymentActivation(false)
+  }
+
+  const handleVerifyAccount = () => {
+    setIsModalOpen(true)
+  }
+
   React.useEffect(() => {
     findAllScheduling()
     fetchStatistic()
+    fetchCompanyStatus()
   }, [])
 
   return (
@@ -65,6 +116,29 @@ export default function HomePage() {
       <Helmet title="Home" />
 
       <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2">
+        {!loadingCompanyStatus && (
+          <>
+            {companyStatus?.status !== 'APPROVED' &&
+              companyStatus?.status === 'API_KEY_NOT_FOUND' && (
+                <BannerAlert
+                  onClickComplete={() => setOpenModalIncompleteOnbording(true)}
+                  title="Ativar conta de pagamento Firula"
+                  description="Você precisa ativar sua conta para que seus clientes consigam realizar o pagamento da reserva pelo Firula."
+                  textButton="Ativar agora"
+                />
+              )}
+
+            {companyStatus?.status === 'PENDING' && (
+              <BannerAlert
+                onClickComplete={handleVerifyAccount}
+                title="Verificação de conta"
+                description="Precisamos verificar sua conta para que você possa receber os pagamentos das reservas."
+                textButton="Verificar conta"
+              />
+            )}
+          </>
+        )}
+
         <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
           {loadingStatistic ? (
             <>
@@ -197,6 +271,44 @@ export default function HomePage() {
           )}
         </Tabs>
       </div>
+      <AlertDialog open={openModalIncompleteOnbording}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              Ativar conta de pagamento Firula
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Você precisa ativar sua conta para que seus clientes consigam
+              realizar o pagamento da reserva pelo Firula.{' '}
+              <span className="mt-2 block  text-primary">
+                Após ativar sua conta, você receberar um e-mail com link para
+                verificação da sua indentidade.
+              </span>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel
+              onClick={() => setOpenModalIncompleteOnbording(false)}
+              disabled={loadingPaymentActivation}
+            >
+              Cancelar
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handlePaymentActivation}
+              disabled={loadingPaymentActivation}
+            >
+              {loadingPaymentActivation ? 'Ativando...' : 'Ativar'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+      {!loadingCompanyStatus && (
+        <PaymentActivationModal
+          open={isModalOpen}
+          onOpenChange={setIsModalOpen}
+          data={companyStatus?.data || []}
+        />
+      )}
     </>
   )
 }
